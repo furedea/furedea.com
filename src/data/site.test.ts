@@ -36,6 +36,25 @@ describe("site.homeDescription", () => {
   });
 });
 
+test("uses the standard large social preview image", () => {
+  expect(site.socialPreview).toEqual({
+    path: "/og_image.png",
+    width: 1200,
+    height: 630,
+  });
+});
+
+test("provides localized not-found guidance", () => {
+  expect(site.notFound.ja).toMatchObject({
+    heading: "ページが見つかりません",
+    homeLabel: "日本語トップへ",
+  });
+  expect(site.notFound.en).toMatchObject({
+    heading: "Page not found",
+    homeLabel: "English home",
+  });
+});
+
 describe("profile data", () => {
   test("exposes required social link icons in order", () => {
     expect(profile.socialLinks.map((link) => link.icon)).toEqual(["github", "x", "zenn"]);

@@ -5,18 +5,28 @@ const distDir = new URL("../dist/", import.meta.url).pathname;
 
 const requiredPaths = [
   "index.html",
+  "404.html",
   "ja/index.html",
   "en/index.html",
   "ja/blog/index.html",
   "en/blog/index.html",
   "_astro",
   "favicon.svg",
+  "og_image.png",
+  "_headers",
   "robots.txt",
   "sitemap-index.xml",
 ];
 
 const requiredHtml = {
   "index.html": ["/ja/"],
+  "404.html": [
+    "ページが見つかりません",
+    "Page not found",
+    "href=\"/ja/\"",
+    "href=\"/en/\"",
+    "content=\"noindex, nofollow\"",
+  ],
   "ja/index.html": [
     "執行 凱斗",
     "ソフトウェア工学",
@@ -25,6 +35,8 @@ const requiredHtml = {
     "https://github.com/",
     "https://x.com/",
     "https://zenn.dev/",
+    "https://furedea.com/og_image.png",
+    "summary_large_image",
   ],
   "en/index.html": [
     "Kaito Shigyo",
