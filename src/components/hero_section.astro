@@ -1,0 +1,131 @@
+---
+import { Image } from "astro:assets";
+import type { Lang } from "@i18n/ui";
+import { pickLocale } from "@i18n/utils";
+import { profile } from "@data/profile";
+// Imported from src/assets so Astro processes it at build time:
+// generates a WebP copy, embeds width/height to avoid layout shift,
+// and emits a fingerprinted URL for long-term caching. Uses sharp internally.
+import profileImage from "../assets/profile.jpg";
+import IconLink from "./icon_link.astro";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <p class="hero-greeting">{pickLocale(profile.title, lang)}</p>
+        <h1 class="hero-name">{pickLocale(profile.name, lang)}</h1>
+        <p class="hero-title">{pickLocale(profile.researchArea, lang)}</p>
+        <p class="hero-affiliation">
+          {pickLocale(profile.affiliation, lang)}, {pickLocale(profile.university, lang)}
+        </p>
+        {
+          profile.socialLinks.length > 0 && (
+            <div class="hero-links" aria-label="Profile links">
+              {profile.socialLinks.map((link) => (
+                <IconLink href={link.url} label={link.platform} icon={link.icon} />
+              ))}
+            </div>
+          )
+        }
+      </div>
+      <div class="hero-photo">
+        <Image
+          src={profileImage}
+          alt={pickLocale(profile.name, lang)}
+          width={520}
+          height={520}
+          loading="eager"
+          format="webp"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-top: calc(var(--header-height) + var(--spacing-section));
+    padding-bottom: var(--spacing-section);
+  }
+
+  .hero-inner {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2.5rem;
+  }
+
+  .hero-text {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .hero-photo {
+    flex: 0 0 auto;
+    width: clamp(220px, 28vw, 320px);
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+  }
+
+  .hero-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 58% 22%;
+    transform: scale(1.25);
+    transform-origin: 58% 22%;
+  }
+
+  .hero-greeting {
+    font-size: 1.125rem;
+    color: var(--color-accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-name {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-title {
+    font-size: 1.25rem;
+    color: var(--color-text-primary);
+    margin-bottom: 0.25rem;
+  }
+
+  .hero-affiliation {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+  }
+
+  .hero-links {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  @media (width < 640px) {
+    .hero-inner {
+      flex-direction: column-reverse;
+      align-items: flex-start;
+      gap: 1.5rem;
+    }
+
+    .hero-photo {
+      width: clamp(140px, 35vw, 200px);
+    }
+  }
+</style>

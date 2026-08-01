@@ -1,0 +1,77 @@
+---
+import type { Lang } from "@i18n/ui";
+import { useTranslations, getLocalizedPath, getDateLocale } from "@i18n/utils";
+
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  slug: string;
+  lang: Lang;
+}
+
+const { title, description, date, slug, lang } = Astro.props;
+const t = useTranslations(lang);
+const formattedDate = date.toLocaleDateString(getDateLocale(lang), {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+});
+const href = getLocalizedPath(`/blog/${slug}/`, lang);
+---
+
+<a class="blog-card" href={href}>
+  <time datetime={date.toISOString()}>{formattedDate}</time>
+  <h3>{title}</h3>
+  <p>{description}</p>
+  <span class="read-more">{t("blog.readMore")} &rarr;</span>
+</a>
+
+<style>
+  .blog-card {
+    display: block;
+    padding: 1.5rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    color: inherit;
+    text-decoration: none;
+    transition:
+      border-color 0.15s,
+      transform 0.15s;
+
+    &:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-2px);
+    }
+  }
+
+  time {
+    font-size: 0.8125rem;
+    font-family: var(--font-mono);
+    color: var(--color-text-secondary);
+  }
+
+  h3 {
+    color: var(--color-text-primary);
+    font-size: 1.125rem;
+    margin: 0.5rem 0;
+    transition: color 0.15s;
+  }
+
+  .blog-card:hover h3 {
+    color: var(--color-accent);
+  }
+
+  p {
+    font-size: 0.9375rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.75rem;
+  }
+
+  .read-more {
+    color: var(--color-accent);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+</style>

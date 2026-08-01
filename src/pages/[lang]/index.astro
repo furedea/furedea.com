@@ -1,0 +1,48 @@
+---
+import type { Lang } from "@i18n/ui";
+import { languages } from "@i18n/ui";
+import BaseLayout from "@layouts/base_layout.astro";
+import HeroSection from "@components/hero_section.astro";
+import AboutSection from "@components/about_section.astro";
+import ResearchSection from "@components/research_section.astro";
+import PublicationsSection from "@components/publications_section.astro";
+import NewsSection from "@components/news_section.astro";
+import BlogSection from "@components/blog_section.astro";
+import ContactSection from "@components/contact_section.astro";
+import { HOME_SECTIONS, type HomeSectionId } from "@data/sections";
+import { getHomeTitle, site } from "@data/site";
+import { pickLocale } from "@i18n/utils";
+
+type SectionComponent = (typeof sectionComponents)[HomeSectionId];
+
+const sectionComponents = {
+  about: AboutSection,
+  research: ResearchSection,
+  publications: PublicationsSection,
+  news: NewsSection,
+  blog: BlogSection,
+  contact: ContactSection,
+} as const satisfies Record<HomeSectionId, unknown>;
+
+export function getStaticPaths() {
+  return (Object.keys(languages) as Lang[]).map((lang) => ({
+    params: { lang },
+  }));
+}
+
+const lang = Astro.params.lang as Lang;
+---
+
+<BaseLayout
+  title={getHomeTitle(lang)}
+  description={pickLocale(site.homeDescription, lang)}
+  lang={lang}
+>
+  <HeroSection lang={lang} />
+  {
+    HOME_SECTIONS.map((id) => {
+      const Section = sectionComponents[id] as SectionComponent;
+      return <Section lang={lang} />;
+    })
+  }
+</BaseLayout>

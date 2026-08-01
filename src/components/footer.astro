@@ -1,0 +1,33 @@
+---
+import type { Lang } from "@i18n/ui";
+import { useTranslations, pickLocale } from "@i18n/utils";
+import { site } from "@data/site";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <p>&copy; {year} {pickLocale(site.ownerName, lang)}. {t("footer.copyright")}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding: 2rem 0;
+    border-top: 1px solid var(--color-border);
+    margin-top: var(--spacing-section);
+  }
+
+  p {
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+    text-align: center;
+  }
+</style>

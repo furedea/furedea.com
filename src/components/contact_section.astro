@@ -1,0 +1,39 @@
+---
+import type { Lang } from "@i18n/ui";
+import { useTranslations } from "@i18n/utils";
+import { profile } from "@data/profile";
+import Section from "./section.astro";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<Section id="contact" title={t("section.contact")}>
+  <div class="contact-grid">
+    <div class="contact-item">
+      <h3>{t("contact.email")}</h3>
+      <a href={`mailto:${profile.email}`}>{profile.email}</a>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .contact-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .contact-item h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+</style>

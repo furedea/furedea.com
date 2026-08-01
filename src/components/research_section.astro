@@ -1,0 +1,52 @@
+---
+import type { Lang } from "@i18n/ui";
+import { useTranslations, pickLocale } from "@i18n/utils";
+import { research } from "@data/research";
+import Section from "./section.astro";
+import TagList from "./tag_list.astro";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<Section id="research" title={t("section.research")}>
+  <div class="card-grid research-grid">
+    {
+      research.map((topic) => (
+        <article class="topic-card">
+          <h3>{pickLocale(topic.title, lang)}</h3>
+          <p>{pickLocale(topic.description, lang)}</p>
+          <TagList tags={topic.tags} />
+        </article>
+      ))
+    }
+  </div>
+</Section>
+
+<style>
+  .research-grid {
+    --card-min: 20rem;
+  }
+
+  .topic-card {
+    padding: 1.5rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+  }
+
+  .topic-card h3 {
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .topic-card p {
+    font-size: 0.9375rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 1rem;
+  }
+</style>

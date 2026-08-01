@@ -13,5 +13,10 @@ logs/
 
 node_modules/
 .pnpm-store/
+.astro/
 coverage/
 dist/
+playwright-report/
+test-results/
+
+.claude/settings.local.json

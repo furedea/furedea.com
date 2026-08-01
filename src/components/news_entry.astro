@@ -1,0 +1,66 @@
+---
+import type { Lang } from "@i18n/ui";
+import type { NewsItem } from "@data/news";
+import { pickLocale } from "@i18n/utils";
+import OptionalLink from "./optional_link.astro";
+
+interface Props {
+  item: NewsItem;
+  lang: Lang;
+}
+
+const { item, lang } = Astro.props;
+const title = pickLocale(item.title, lang);
+---
+
+<li class="news-entry">
+  <time datetime={item.date}>{item.date}</time>
+  <span class={`badge badge-${item.type}`}>{item.type}</span>
+  <OptionalLink href={item.url}>{title}</OptionalLink>
+</li>
+
+<style>
+  .news-entry {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+  }
+
+  time {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+  }
+
+  .badge {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.0625rem 0.375rem;
+    border-radius: 0.1875rem;
+    white-space: nowrap;
+    color: var(--color-bg);
+    background: var(--color-text-secondary);
+  }
+
+  .badge-paper {
+    background: var(--color-accent);
+  }
+
+  .badge-award {
+    background: #f5a623;
+  }
+
+  .badge-talk {
+    background: #7c8cf5;
+  }
+
+  @media (width < 640px) {
+    .news-entry {
+      flex-wrap: wrap;
+    }
+  }
+</style>

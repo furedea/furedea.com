@@ -1,0 +1,42 @@
+---
+import type { Lang } from "@i18n/ui";
+import { getLocalizedPath, getOgLocale, stripLocaleAndBase } from "@i18n/utils";
+import { BASE_PATH } from "../consts";
+
+interface Props {
+  title: string;
+  description: string;
+  lang: Lang;
+}
+
+const { title, description, lang } = Astro.props;
+const internalPath = stripLocaleAndBase(Astro.url.pathname);
+const origin = Astro.site?.origin ?? "";
+const canonicalUrl = `${origin}${getLocalizedPath(internalPath, lang)}`;
+const jaUrl = `${origin}${getLocalizedPath(internalPath, "ja")}`;
+const enUrl = `${origin}${getLocalizedPath(internalPath, "en")}`;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content={description} />
+<title>{title}</title>
+<link rel="canonical" href={canonicalUrl} />
+<link rel="alternate" hreflang="ja" href={jaUrl} />
+<link rel="alternate" hreflang="en" href={enUrl} />
+<link rel="alternate" hreflang="x-default" href={jaUrl} />
+<link rel="icon" type="image/svg+xml" href={`${BASE_PATH}/favicon.svg`} />
+<link rel="sitemap" href={`${BASE_PATH}/sitemap-index.xml`} />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap"
+  rel="stylesheet"
+/>
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:locale" content={getOgLocale(lang)} />

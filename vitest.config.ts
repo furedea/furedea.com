@@ -1,9 +1,15 @@
+import { resolve } from "node:path";
+
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      "@i18n": resolve(__dirname, "src/i18n"),
+      "@data": resolve(__dirname, "src/data"),
+    },
+  },
   test: {
-    environment: "node",
-    globals: true,
-    include: ["src/**/*.test.ts", "src/**/*.spec.ts"],
+    include: ["src/**/*.test.ts"],
   },
 });

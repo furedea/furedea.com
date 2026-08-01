@@ -1,0 +1,52 @@
+---
+import type { Lang } from "@i18n/ui";
+import { useTranslations, getLocalizedPath } from "@i18n/utils";
+import { getLocalizedPosts } from "@data/blog";
+import Section from "./section.astro";
+import BlogCard from "./blog_card.astro";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const posts = await getLocalizedPosts(lang, 3);
+---
+
+<Section id="blog" title={t("section.blog")}>
+  {
+    posts.length > 0 ? (
+      <>
+        <div class="card-grid">
+          {posts.map((post) => (
+            <BlogCard
+              title={post.data.title}
+              description={post.data.description}
+              date={post.data.date}
+              slug={post.id}
+              lang={lang}
+            />
+          ))}
+        </div>
+        <a class="view-all" href={getLocalizedPath("/blog/", lang)}>
+          {t("blog.allPosts")} &rarr;
+        </a>
+      </>
+    ) : (
+      <p class="empty">{t("blog.empty")}</p>
+    )
+  }
+</Section>
+
+<style>
+  .empty {
+    color: var(--color-text-secondary);
+  }
+
+  .view-all {
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-weight: 500;
+  }
+</style>

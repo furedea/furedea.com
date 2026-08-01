@@ -1,0 +1,38 @@
+---
+import type { Lang } from "@i18n/ui";
+import { useTranslations } from "@i18n/utils";
+import { publications } from "@data/publications";
+import Section from "./section.astro";
+import PublicationEntry from "./publication_entry.astro";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<Section id="publications" title={t("section.publications")}>
+  {
+    publications.length > 0 ? (
+      <ul class="pub-list">
+        {publications.map((pub) => (
+          <PublicationEntry pub={pub} />
+        ))}
+      </ul>
+    ) : (
+      <p class="empty">{t("publications.empty")}</p>
+    )
+  }
+</Section>
+
+<style>
+  .pub-list {
+    list-style: none;
+  }
+
+  .empty {
+    color: var(--color-text-secondary);
+  }
+</style>

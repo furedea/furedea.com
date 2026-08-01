@@ -1,0 +1,29 @@
+---
+import { render } from "astro:content";
+import type { Lang } from "@i18n/ui";
+import { languages } from "@i18n/ui";
+import BlogLayout from "@layouts/blog_layout.astro";
+import { getLocalizedPosts } from "@data/blog";
+
+export async function getStaticPaths() {
+  const langs = Object.keys(languages) as Lang[];
+  const perLang = await Promise.all(
+    langs.map(async (lang) => {
+      const posts = await getLocalizedPosts(lang);
+      return posts.map((post) => ({
+        params: { lang, slug: post.id },
+        props: { post },
+      }));
+    }),
+  );
+  return perLang.flat();
+}
+
+const { post } = Astro.props;
+const lang = Astro.params.lang as Lang;
+const { Content } = await render(post);
+---
+
+<BlogLayout post={post} lang={lang}>
+  <Content />
+</BlogLayout>
