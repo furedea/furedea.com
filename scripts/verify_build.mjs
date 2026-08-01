@@ -21,7 +21,12 @@ const requiredPaths = [
 ];
 
 const requiredHtml = {
-  "index.html": ["/ja/"],
+  "index.html": [
+    "/ja/",
+    "href=\"/favicon.png\"",
+    "href=\"/favicon.svg\"",
+    "href=\"/apple_touch_icon.png\"",
+  ],
   "404.html": [
     "ページが見つかりません",
     "Page not found",
