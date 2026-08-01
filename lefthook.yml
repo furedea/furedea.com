@@ -1,0 +1,28 @@
+commit-msg:
+  commands:
+    commitlint:
+      run: commitlint --edit {1}
+
+pre-commit:
+  parallel: true
+  commands:
+    nixfmt:
+      glob: "*.nix"
+      run: bash -c 'mapfile -t files < <(git ls-files "*.nix"); ((${#files[@]} == 0)) || nixfmt --check "${files[@]}"'
+    statix:
+      glob: "*.nix"
+      run: statix check .
+    deadnix:
+      glob: "*.nix"
+      run: deadnix --fail .
+    format:
+      glob: "*.{ts,tsx,js,jsx}"
+      run: pnpm run format:check
+    lint:
+      glob: "*.{ts,tsx,js,jsx}"
+      run: pnpm run lint
+    typecheck:
+      glob: "*.{ts,tsx,js,jsx}"
+      run: pnpm run typecheck
+    ls-lint:
+      run: ls_lint

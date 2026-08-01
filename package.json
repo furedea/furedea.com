@@ -1,0 +1,28 @@
+{
+  "name": "template-typescript",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint --fix .",
+    "typecheck": "oxlint --type-aware --type-check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "knip": "knip",
+    "knip:production": "knip --production",
+    "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run knip"
+  },
+  "devDependencies": {
+    "@types/node": "25.6.0",
+    "knip": "6.4.1",
+    "oxfmt": "0.45.0",
+    "oxlint": "1.60.0",
+    "oxlint-tsgolint": "0.21.1",
+    "typescript": "6.0.3",
+    "vitest": "4.1.4"
+  },
+  "packageManager": "pnpm@10.33.0"
+}

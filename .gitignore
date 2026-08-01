@@ -1,0 +1,17 @@
+.direnv/
+result
+result-*
+logs/
+
+.DS_Store
+.env
+.env.*
+!.env.example
+
+.vscode/
+.idea/
+
+node_modules/
+.pnpm-store/
+coverage/
+dist/

@@ -1,0 +1,27 @@
+ls:
+  .dir: regex:\.?[a-z0-9]+(-[a-z0-9]+)*
+  .*: regex:[a-z0-9]*([._][a-z0-9]+)*
+
+ignore:
+  - .git
+  - .direnv
+  - result
+  - result-*
+  - docs/logs
+
+  - README.md
+
+  - pnpm-lock.yaml
+  - pnpm-workspace.yaml
+  - node_modules
+  - .pnpm-store
+  - dist
+  - build
+  - coverage
+  - .next
+  - out
+  - .nuxt
+  - .output
+  - .svelte-kit
+  - .turbo
+  - .vite
