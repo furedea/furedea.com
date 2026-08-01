@@ -1,0 +1,57 @@
+---
+import type { Lang } from "@i18n/ui";
+import { languages } from "@i18n/ui";
+import BaseLayout from "@layouts/base_layout.astro";
+import BlogCard from "@components/blog_card.astro";
+import { getLocalizedPosts } from "@data/blog";
+import { getPageTitle, site } from "@data/site";
+import { pickLocale, useTranslations } from "@i18n/utils";
+
+export function getStaticPaths() {
+  return (Object.keys(languages) as Lang[]).map((lang) => ({
+    params: { lang },
+  }));
+}
+
+const lang = Astro.params.lang as Lang;
+const t = useTranslations(lang);
+const posts = await getLocalizedPosts(lang);
+const title = t("section.blog");
+---
+
+<BaseLayout
+  title={getPageTitle(title, lang)}
+  description={pickLocale(site.blogDescription, lang)}
+  lang={lang}
+>
+  <div class="blog-list">
+    <div class="container">
+      <h1>{title}</h1>
+      <div class="card-grid">
+        {
+          posts.map((post) => (
+            <BlogCard
+              title={post.data.title}
+              description={post.data.description}
+              date={post.data.date}
+              slug={post.id}
+              lang={lang}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .blog-list {
+    padding-top: calc(var(--header-height) + 3rem);
+    padding-bottom: var(--spacing-section);
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+</style>

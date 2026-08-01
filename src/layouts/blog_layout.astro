@@ -1,0 +1,137 @@
+---
+import BaseLayout from "./base_layout.astro";
+import TagList from "@components/tag_list.astro";
+import type { Lang } from "@i18n/ui";
+import { useTranslations, getLocalizedPath, getDateLocale } from "@i18n/utils";
+import { getPageTitle } from "@data/site";
+import type { BlogEntry } from "@data/blog";
+
+interface Props {
+  post: BlogEntry;
+  lang: Lang;
+}
+
+const { post, lang } = Astro.props;
+const { title, description, date, tags } = post.data;
+const t = useTranslations(lang);
+const formattedDate = date.toLocaleDateString(getDateLocale(lang), {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<BaseLayout
+  title={getPageTitle(title, lang)}
+  description={description}
+  lang={lang}
+>
+  <article class="blog-article">
+    <div class="container">
+      <header class="article-header">
+        <a class="back-link" href={getLocalizedPath("/blog/", lang)}>
+          &larr; {t("blog.backToList")}
+        </a>
+        <h1>{title}</h1>
+        <div class="meta">
+          <time datetime={date.toISOString()}>
+            {t("blog.publishedOn")}: {formattedDate}
+          </time>
+          {tags.length > 0 && <TagList tags={tags} />}
+        </div>
+      </header>
+      <div class="article-body">
+        <slot />
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .blog-article {
+    padding-top: calc(var(--header-height) + 3rem);
+    padding-bottom: var(--spacing-section);
+  }
+
+  .back-link {
+    display: inline-block;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 2rem;
+
+    &:hover {
+      color: var(--color-accent);
+    }
+  }
+
+  .article-header h1 {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    margin-bottom: 1rem;
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  time {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+  }
+
+  .article-body {
+    max-width: 42rem;
+
+    :global(h2) {
+      font-size: 1.5rem;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    :global(h3) {
+      font-size: 1.25rem;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    :global(p) {
+      margin-bottom: 1.25rem;
+      color: var(--color-text-secondary);
+    }
+
+    :global(pre) {
+      padding: 1rem;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 0.375rem;
+      overflow-x: auto;
+      margin-bottom: 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+    }
+
+    :global(code) {
+      font-family: var(--font-mono);
+      font-size: 0.9em;
+    }
+
+    :global(ul),
+    :global(ol) {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+      color: var(--color-text-secondary);
+    }
+
+    :global(blockquote) {
+      margin: 1.5rem 0;
+      padding-left: 1rem;
+      border-left: 3px solid var(--color-accent);
+      color: var(--color-text-secondary);
+    }
+  }
+</style>

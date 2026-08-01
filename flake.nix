@@ -1,5 +1,5 @@
 {
-  description = "";
+  description = "Development environment for furedea.com";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-25.11-darwin";

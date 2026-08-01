@@ -10,14 +10,20 @@ ignore:
   - docs/logs
 
   - README.md
+  - CLAUDE.md
+  - CONTENT_LICENSE.md
+  - docs/adr
 
   - pnpm-lock.yaml
   - pnpm-workspace.yaml
   - node_modules
   - .pnpm-store
+  - .astro
   - dist
   - build
   - coverage
+  - playwright-report
+  - test-results
   - .next
   - out
   - .nuxt
@@ -25,3 +31,4 @@ ignore:
   - .svelte-kit
   - .turbo
   - .vite
+  - src/pages

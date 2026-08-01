@@ -1,28 +1,56 @@
 {
-  "name": "template-typescript",
+  "name": "furedea.com",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "format": "oxfmt .",
-    "format:check": "oxfmt --check .",
-    "lint": "oxlint .",
-    "lint:fix": "oxlint --fix .",
-    "typecheck": "oxlint --type-aware --type-check .",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "format": "oxfmt 'src/**/*.ts' '*.ts' --no-error-on-unmatched-pattern",
+    "format:check": "oxfmt --check 'src/**/*.ts' '*.ts' --no-error-on-unmatched-pattern",
+    "lint": "oxlint src astro.config.ts playwright.config.ts vitest.config.ts --deny-warnings",
+    "lint:fix": "oxlint src astro.config.ts playwright.config.ts vitest.config.ts --fix",
+    "typecheck": "astro check",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
     "knip": "knip",
     "knip:production": "knip --production",
-    "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run knip"
+    "verify:build": "node scripts/verify_build.mjs",
+    "check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run knip && pnpm run build && pnpm run verify:build",
+    "check:e2e": "pnpm run build && pnpm run test:e2e",
+    "check:full": "pnpm run check && pnpm run test:e2e"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.8",
+    "@astrojs/sitemap": "^3.7.2",
+    "@fontsource-variable/inter": "^5.2.8",
+    "astro": "^6.4.8",
+    "sharp": "^0.35.3",
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "@types/node": "25.6.0",
-    "knip": "6.4.1",
-    "oxfmt": "0.45.0",
-    "oxlint": "1.60.0",
-    "oxlint-tsgolint": "0.21.1",
-    "typescript": "6.0.3",
-    "vitest": "4.1.4"
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.5.2",
+    "knip": "^6.4.1",
+    "oxfmt": "^0.44.0",
+    "oxlint": "^1.59.0",
+    "vitest": "^4.1.3"
   },
-  "packageManager": "pnpm@10.33.0"
+  "packageManager": "pnpm@10.33.0",
+  "pnpm": {
+    "overrides": {
+      "fast-uri": "3.1.4",
+      "js-yaml": "4.3.0",
+      "postcss": "8.5.23",
+      "sharp": "0.35.3",
+      "svgo": "4.0.2",
+      "vite": "7.3.6"
+    },
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp"
+    ]
+  }
 }

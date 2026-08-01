@@ -1,0 +1,38 @@
+---
+import type { Lang } from "@i18n/ui";
+import { useTranslations } from "@i18n/utils";
+import { news } from "@data/news";
+import Section from "./section.astro";
+import NewsEntry from "./news_entry.astro";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<Section id="news" title={t("section.news")}>
+  {
+    news.length > 0 ? (
+      <ul class="news-list">
+        {news.map((item) => (
+          <NewsEntry item={item} lang={lang} />
+        ))}
+      </ul>
+    ) : (
+      <p class="empty">{t("news.empty")}</p>
+    )
+  }
+</Section>
+
+<style>
+  .news-list {
+    list-style: none;
+  }
+
+  .empty {
+    color: var(--color-text-secondary);
+  }
+</style>

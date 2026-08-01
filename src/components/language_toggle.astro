@@ -1,0 +1,60 @@
+---
+import type { Lang } from "@i18n/ui";
+import { languages } from "@i18n/ui";
+import { getLocalizedPath, stripLocaleAndBase } from "@i18n/utils";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const internalPath = stripLocaleAndBase(Astro.url.pathname);
+---
+
+<nav aria-label="Language">
+  <ul class="lang-toggle">
+    {
+      (Object.entries(languages) as [Lang, string][]).map(([code, label]) => (
+        <li>
+          {code === lang ? (
+            <span class="current" aria-current="true">
+              {label}
+            </span>
+          ) : (
+            <a href={getLocalizedPath(internalPath, code)}>{label}</a>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .lang-toggle {
+    display: flex;
+    gap: 0.25rem;
+    list-style: none;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .lang-toggle li + li::before {
+    content: "/";
+    margin-right: 0.25rem;
+    color: var(--color-text-secondary);
+  }
+
+  .current {
+    color: var(--color-accent);
+  }
+
+  a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--color-text-primary);
+    }
+  }
+</style>

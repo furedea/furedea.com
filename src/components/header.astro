@@ -1,0 +1,194 @@
+---
+import type { Lang } from "@i18n/ui";
+import { useTranslations, getLocalePrefix, pickLocale } from "@i18n/utils";
+import { site } from "@data/site";
+import { HOME_SECTIONS } from "@data/sections";
+import LanguageToggle from "./language_toggle.astro";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const base = getLocalePrefix(lang);
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="site-logo" href={`${base}/`}>
+      {pickLocale(site.ownerName, lang)}
+    </a>
+
+    <button
+      class="menu-toggle"
+      aria-expanded="false"
+      aria-controls="nav-menu"
+      aria-label={t("common.menu")}
+    >
+      <span class="hamburger"></span>
+    </button>
+
+    <nav id="nav-menu" class="site-nav" aria-label="Main">
+      <ul>
+        {
+          HOME_SECTIONS.map((id) => (
+            <li>
+              <a href={`${base}/#${id}`}>{t(`nav.${id}`)}</a>
+            </li>
+          ))
+        }
+      </ul>
+      <LanguageToggle lang={lang} />
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
+  const nav = document.querySelector<HTMLElement>("#nav-menu");
+
+  toggle?.addEventListener("click", () => {
+    const expanded = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!expanded));
+    nav?.classList.toggle("open");
+  });
+
+  nav?.querySelectorAll('a[href*="#"]').forEach((link) => {
+    link.addEventListener("click", () => {
+      toggle?.setAttribute("aria-expanded", "false");
+      nav.classList.remove("open");
+    });
+  });
+</script>
+
+<style>
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    height: var(--header-height);
+    background: color-mix(in srgb, var(--color-bg) 85%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  .site-logo {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+
+  .site-nav ul {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+    align-items: center;
+  }
+
+  .site-nav a {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 0.15s;
+
+    &:hover {
+      color: var(--color-text-primary);
+    }
+  }
+
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+
+  .hamburger {
+    display: block;
+    position: relative;
+    width: 1.25rem;
+    height: 2px;
+    background: var(--color-text-primary);
+    transition: background 0.15s;
+
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--color-text-primary);
+      transition: transform 0.2s;
+    }
+
+    &::before {
+      top: -6px;
+    }
+
+    &::after {
+      top: 6px;
+    }
+  }
+
+  [aria-expanded="true"] .hamburger {
+    background: transparent;
+
+    &::before {
+      top: 0;
+      transform: rotate(45deg);
+    }
+
+    &::after {
+      top: 0;
+      transform: rotate(-45deg);
+    }
+  }
+
+  @media (width < 640px) {
+    .menu-toggle {
+      display: block;
+    }
+
+    .site-nav {
+      display: none;
+      position: absolute;
+      top: var(--header-height);
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      gap: 0;
+      padding: 1rem;
+      background: var(--color-bg);
+      border-bottom: 1px solid var(--color-border);
+
+      &.open {
+        display: flex;
+      }
+    }
+
+    .site-nav ul {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+  }
+</style>

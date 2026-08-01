@@ -1,0 +1,24 @@
+---
+import SectionHeading from "./section_heading.astro";
+
+interface Props {
+  id: string;
+  title: string;
+  class?: string;
+}
+
+const { id, title, class: extraClass } = Astro.props;
+---
+
+<section class:list={["section", extraClass]} aria-labelledby={id}>
+  <div class="container">
+    <SectionHeading id={id} title={title} />
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section {
+    padding-bottom: var(--spacing-section);
+  }
+</style>
