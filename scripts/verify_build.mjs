@@ -5,18 +5,35 @@ const distDir = new URL("../dist/", import.meta.url).pathname;
 
 const requiredPaths = [
   "index.html",
+  "404.html",
   "ja/index.html",
   "en/index.html",
   "ja/blog/index.html",
   "en/blog/index.html",
   "_astro",
   "favicon.svg",
+  "favicon.png",
+  "apple_touch_icon.png",
+  "og_image.png",
+  "_headers",
   "robots.txt",
   "sitemap-index.xml",
 ];
 
 const requiredHtml = {
-  "index.html": ["/ja/"],
+  "index.html": [
+    "/ja/",
+    "href=\"/favicon.png\"",
+    "href=\"/favicon.svg\"",
+    "href=\"/apple_touch_icon.png\"",
+  ],
+  "404.html": [
+    "ページが見つかりません",
+    "Page not found",
+    "href=\"/ja/\"",
+    "href=\"/en/\"",
+    "content=\"noindex, nofollow\"",
+  ],
   "ja/index.html": [
     "執行 凱斗",
     "ソフトウェア工学",
@@ -25,6 +42,10 @@ const requiredHtml = {
     "https://github.com/",
     "https://x.com/",
     "https://zenn.dev/",
+    "href=\"/favicon.png\"",
+    "href=\"/apple_touch_icon.png\"",
+    "https://furedea.com/og_image.png",
+    "summary_large_image",
   ],
   "en/index.html": [
     "Kaito Shigyo",

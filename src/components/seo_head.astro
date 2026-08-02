@@ -1,31 +1,48 @@
 ---
 import type { Lang } from "@i18n/ui";
-import { getLocalizedPath, getOgLocale, stripLocaleAndBase } from "@i18n/utils";
+import { getLocalizedPath, getOgLocale, pickLocale, stripLocaleAndBase } from "@i18n/utils";
+import { site } from "@data/site";
 import { BASE_PATH } from "../consts";
 
 interface Props {
   title: string;
   description: string;
   lang: Lang;
+  noindex?: boolean;
 }
 
-const { title, description, lang } = Astro.props;
+const { title, description, lang, noindex = false } = Astro.props;
 const internalPath = stripLocaleAndBase(Astro.url.pathname);
 const origin = Astro.site?.origin ?? "";
 const canonicalUrl = `${origin}${getLocalizedPath(internalPath, lang)}`;
 const jaUrl = `${origin}${getLocalizedPath(internalPath, "ja")}`;
 const enUrl = `${origin}${getLocalizedPath(internalPath, "en")}`;
+const socialPreviewUrl = `${origin}${site.socialPreview.path}`;
+const socialPreviewAlt = `${pickLocale(site.ownerName, lang)} — ${pickLocale(site.labName, lang)}`;
 ---
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="description" content={description} />
 <title>{title}</title>
-<link rel="canonical" href={canonicalUrl} />
-<link rel="alternate" hreflang="ja" href={jaUrl} />
-<link rel="alternate" hreflang="en" href={enUrl} />
-<link rel="alternate" hreflang="x-default" href={jaUrl} />
-<link rel="icon" type="image/svg+xml" href={`${BASE_PATH}/favicon.svg`} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+{
+  !noindex && (
+    <>
+      <link rel="canonical" href={canonicalUrl} />
+      <link rel="alternate" hreflang="ja" href={jaUrl} />
+      <link rel="alternate" hreflang="en" href={enUrl} />
+      <link rel="alternate" hreflang="x-default" href={jaUrl} />
+    </>
+  )
+}
+<link rel="icon" type="image/png" sizes="512x512" href={`${BASE_PATH}/favicon.png`} />
+<link rel="icon" type="image/svg+xml" sizes="any" href={`${BASE_PATH}/favicon.svg`} />
+<link
+  rel="apple-touch-icon"
+  sizes="180x180"
+  href={`${BASE_PATH}/apple_touch_icon.png`}
+/>
 <link rel="sitemap" href={`${BASE_PATH}/sitemap-index.xml`} />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -40,3 +57,14 @@ const enUrl = `${origin}${getLocalizedPath(internalPath, "en")}`;
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonicalUrl} />
 <meta property="og:locale" content={getOgLocale(lang)} />
+<meta property="og:image" content={socialPreviewUrl} />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content={String(site.socialPreview.width)} />
+<meta property="og:image:height" content={String(site.socialPreview.height)} />
+<meta property="og:image:alt" content={socialPreviewAlt} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={socialPreviewUrl} />
+<meta name="twitter:image:alt" content={socialPreviewAlt} />

@@ -11,16 +11,17 @@ interface Props {
   title: string;
   description: string;
   lang: Lang;
+  noindex?: boolean;
 }
 
-const { title, description, lang } = Astro.props;
+const { title, description, lang, noindex = false } = Astro.props;
 const t = useTranslations(lang);
 ---
 
 <!doctype html>
 <html lang={lang}>
   <head>
-    <SeoHead title={title} description={description} lang={lang} />
+    <SeoHead title={title} description={description} lang={lang} noindex={noindex} />
   </head>
   <body>
     <a class="skip-link" href="#main">{t("common.skipToContent")}</a>

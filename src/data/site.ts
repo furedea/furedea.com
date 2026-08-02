@@ -6,6 +6,18 @@ interface SiteMeta {
   labName: LocalizedText;
   homeDescription: LocalizedText;
   blogDescription: LocalizedText;
+  socialPreview: {
+    path: string;
+    width: number;
+    height: number;
+  };
+  notFound: Record<Lang, NotFoundText>;
+}
+
+interface NotFoundText {
+  heading: string;
+  description: string;
+  homeLabel: string;
 }
 
 export const site: SiteMeta = {
@@ -24,6 +36,23 @@ export const site: SiteMeta = {
   blogDescription: {
     ja: "執行凱斗のブログ記事一覧",
     en: "Blog posts by Kaito Shigyo",
+  },
+  socialPreview: {
+    path: "/og_image.png",
+    width: 1200,
+    height: 630,
+  },
+  notFound: {
+    ja: {
+      heading: "ページが見つかりません",
+      description: "URLが変更されたか，ページが移動または削除された可能性があります．",
+      homeLabel: "日本語トップへ",
+    },
+    en: {
+      heading: "Page not found",
+      description: "The page may have moved, been removed, or never existed.",
+      homeLabel: "English home",
+    },
   },
 };
 

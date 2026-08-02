@@ -44,6 +44,31 @@ test("root redirects to Japanese top page", async ({ page }) => {
   await expect(page).toHaveURL(/\/ja\/$/);
 });
 
+test("publishes social preview metadata on the Japanese top page", async ({ page }) => {
+  await page.goto("/ja/");
+
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+    "content",
+    "https://furedea.com/og_image.png",
+  );
+  await expect(page.locator('meta[property="og:image:width"]')).toHaveAttribute("content", "1200");
+  await expect(page.locator('meta[property="og:image:height"]')).toHaveAttribute("content", "630");
+  await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute(
+    "content",
+    "summary_large_image",
+  );
+});
+
+test("unknown paths return the custom not-found page", async ({ page }) => {
+  const response = await page.goto("/missing-page/");
+
+  expect(response?.status()).toBe(404);
+  await expect(page.getByRole("heading", { name: "ページが見つかりません" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "日本語トップへ" })).toHaveAttribute("href", "/ja/");
+  await expect(page.getByRole("link", { name: "English home" })).toHaveAttribute("href", "/en/");
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, nofollow");
+});
+
 test("blog card is clickable as a whole", async ({ page }) => {
   await page.goto("/ja/");
 
