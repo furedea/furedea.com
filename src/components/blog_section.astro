@@ -21,9 +21,9 @@ const posts = await getLocalizedPosts(lang, 3);
         <div class="card-grid">
           {posts.map((post) => (
             <BlogCard
-              title={post.data.title}
-              description={post.data.description}
-              date={post.data.date}
+              title={post.title}
+              description={post.description}
+              date={post.date}
               slug={post.id}
               lang={lang}
             />
