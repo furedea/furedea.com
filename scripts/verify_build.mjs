@@ -10,6 +10,7 @@ const requiredPaths = [
   "en/index.html",
   "ja/blog/index.html",
   "en/blog/index.html",
+  "images",
   "_astro",
   "favicon.svg",
   "favicon.png",

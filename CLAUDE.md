@@ -6,7 +6,10 @@ This repository contains the Astro source for `furedea.com`.
 
 - `src/pages/`: file-based routes for Japanese and English pages
 - `src/components/`: reusable Astro components
-- `src/content/`: localized blog posts
+- `articles/`: canonical Zenn-compatible Japanese articles
+- `article_config.json`: non-secret article publishing settings
+- `images/`: canonical article images
+- `src/content/`: legacy Japanese posts and English-only posts
 - `src/data/`: structured website content
 - `src/i18n/`: localization helpers and labels
 - `tests/e2e/`: browser-level behavior specifications
