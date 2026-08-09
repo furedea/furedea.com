@@ -10,7 +10,7 @@ test("parses project-owned esa publishing settings", async () => {
   expect(parseArticleConfig(source)).toEqual({
     esa: {
       team: "posl",
-      category: "blog",
+      category: "Members/k-shigyo",
     },
   });
 });
