@@ -78,6 +78,77 @@ Check all publication targets before release.
   ).toContain("> **Note**\n>\n> Check all publication targets before release.");
 });
 
+test("converts Zenn details to esa disclosure widgets", () => {
+  const markdown = `:::details Configuration
+
+Hidden **Markdown** content.
+
+:::`;
+
+  expect(
+    toEsaMarkdown(markdown, {
+      canonicalUrl: "https://furedea.com/ja/blog/article-publishing/",
+    }),
+  ).toContain(`<details>
+<summary>Configuration</summary>
+
+Hidden **Markdown** content.
+
+</details>`);
+});
+
+test("converts Zenn image captions to esa figures", () => {
+  const markdown = `![Architecture](/images/article-publishing/architecture.png)
+_System overview._`;
+
+  expect(
+    toEsaMarkdown(markdown, {
+      canonicalUrl: "https://furedea.com/ja/blog/article-publishing/",
+    }),
+  ).toContain(`<figure>
+<img src="https://furedea.com/images/article-publishing/architecture.png" alt="Architecture">
+<figcaption>System overview.</figcaption>
+</figure>`);
+});
+
+test("preserves Zenn extension examples inside fenced code blocks", () => {
+  const markdown = `\`\`\`markdown
+:::details Example
+![Image](/images/example.png)
+_Caption._
+:::
+\`\`\``;
+
+  expect(
+    toEsaMarkdown(markdown, {
+      canonicalUrl: "https://furedea.com/ja/blog/article-publishing/",
+    }),
+  ).toContain(markdown);
+});
+
+test("converts Zenn details containing fenced code", () => {
+  const markdown = `:::details Configuration
+
+\`\`\`zsh
+export EDITOR=nvim
+\`\`\`
+
+:::`;
+
+  expect(
+    toEsaMarkdown(markdown, {
+      canonicalUrl: "https://furedea.com/ja/blog/article-publishing/",
+    }),
+  ).toContain(`<details>
+<summary>Configuration</summary>
+
+\`\`\`zsh
+export EDITOR=nvim
+\`\`\`
+
+</details>`);
+});
+
 test("maps Zenn article metadata to the website model", () => {
   const publishedAt = new Date("2026-08-04T00:00:00.000Z");
 
