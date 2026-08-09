@@ -3,11 +3,11 @@ title: "ぼくのかんがえたさいきょうのターミナル環境 2026"
 emoji: "📝"
 type: "tech"
 topics: ["terminal", "CLI", "TUI", "Zsh", "command"]
-published: false
-published_at: 2026-08-07
+published: true
+published_at: 2026-08-10
 ---
 
-::: message
+:::message
 
 この記事は基本的に全て人力で作成されています．
 AI の使用は情報収集，図の作成補助，誤字脱字のチェックのみです．
@@ -157,7 +157,7 @@ Fish や Nushell などもありますが，POSIX 非互換でコマンドが別
 
 リポジトリ名，現在の Git ブランチ，変更の有無，使用している言語やバージョンなどを，コマンドを打たなくても常に確認できます．
 
-::: details Starship の設定例
+:::details Starship の設定例
 
 [私の Starship 設定ファイル](https://github.com/furedea/dotfiles/blob/main/starship/starship.toml)
 
@@ -226,9 +226,9 @@ ghq は Git リポジトリをまとめて管理，roots はモノレポなど�
 
 ![fzf](/images/modern-terminal-environment/fzf.gif)
 
-::: details 設定ファイルの記述例
+:::details 設定ファイルの記述例
 
-```.zshrc
+```zsh
 # ghq + roots + fzf: Ctrl-G to fuzzy-cd into a managed repository, monorepo
 # subproject, or worktree. `roots` expands each ghq path to all detected
 # project markers (.git/config, go.mod, package.json, Cargo.toml).
