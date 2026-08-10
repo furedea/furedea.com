@@ -4,11 +4,18 @@ import {
   createZennArticleTemplate,
   getArticleDescription,
   isVisibleArticle,
+  parseArticleSlug,
   parseZennArticleSource,
   toEsaMarkdown,
   toEsaPostPayload,
   toWebsiteArticleMetadata,
 } from "./article";
+
+test("accepts the pnpm argument separator before an article slug", () => {
+  expect(parseArticleSlug(["--", "modern-terminal-environment"], "Usage")).toBe(
+    "modern-terminal-environment",
+  );
+});
 
 test("creates an article that both Zenn and the website can load", () => {
   expect(createZennArticleTemplate(new Date("2026-08-04T15:00:00+09:00"))).toBe(`---

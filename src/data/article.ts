@@ -37,6 +37,15 @@ export function isZennSlug(value: string): boolean {
   return ZENN_SLUG_PATTERN.test(value);
 }
 
+export function parseArticleSlug(arguments_: string[], usage: string): string {
+  const normalizedArguments = arguments_[0] === "--" ? arguments_.slice(1) : arguments_;
+  const slug = normalizedArguments[0];
+  if (normalizedArguments.length !== 1 || slug === undefined || !isZennSlug(slug)) {
+    throw new Error(usage);
+  }
+  return slug;
+}
+
 export function createZennArticleTemplate(now: Date): string {
   return `---
 title: ""

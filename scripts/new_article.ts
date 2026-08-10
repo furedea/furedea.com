@@ -1,9 +1,12 @@
 import { writeFile } from "node:fs/promises";
 
-import { createZennArticleTemplate, isZennSlug } from "../src/data/article.ts";
+import { createZennArticleTemplate, parseArticleSlug } from "../src/data/article.ts";
 
 async function main(): Promise<void> {
-  const slug = getSlug(process.argv.slice(2));
+  const slug = parseArticleSlug(
+    process.argv.slice(2),
+    "Usage: pnpm article:new -- <12-50 character Zenn slug>",
+  );
   const articleUrl = new URL(`../articles/${slug}.md`, import.meta.url);
 
   try {
@@ -19,14 +22,6 @@ async function main(): Promise<void> {
   }
 
   console.log(`Created articles/${slug}.md`);
-}
-
-function getSlug(arguments_: string[]): string {
-  const slug = arguments_[0];
-  if (arguments_.length !== 1 || slug === undefined || !isZennSlug(slug)) {
-    throw new Error("Usage: pnpm article:new -- <12-50 character Zenn slug>");
-  }
-  return slug;
 }
 
 await main();
