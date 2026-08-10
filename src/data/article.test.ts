@@ -114,7 +114,7 @@ _System overview._`;
     }),
   ).toContain(`<figure>
 <img src="https://furedea.com/images/article-publishing/architecture.png" alt="Architecture">
-<figcaption>System overview.</figcaption>
+<figcaption style="text-align: center;"><em>System overview.</em></figcaption>
 </figure>`);
 });
 
