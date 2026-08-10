@@ -1,3 +1,4 @@
+import { unified } from "@astrojs/markdown-remark";
 import sitemap from "@astrojs/sitemap";
 import { defineConfig } from "astro/config";
 
@@ -15,7 +16,7 @@ export default defineConfig({
   },
   integrations: [articleImages(), sitemap()],
   markdown: {
-    remarkPlugins: [zennMarkdown],
+    processor: unified({ remarkPlugins: [zennMarkdown] }),
   },
   devToolbar: {
     enabled: false,

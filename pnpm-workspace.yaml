@@ -10,9 +10,15 @@ auditConfig:
 # Value is in minutes: 7 days × 24 h × 60 min = 10080
 minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
+  # Security remediation: DOMPurify detached subtree XSS.
+  - dompurify@3.4.13
   # Renovate security update: mermaid@11.16.1
   - mermaid@11.16.1
+  # Security remediation: nanoid zero-size infinite loop.
+  - nanoid@3.3.17
   # Renovate security update: fast-uri@3.1.5
   - fast-uri@3.1.5
   # Renovate security update: js-yaml@4.3.1
   - js-yaml@4.3.1
+  # Renovate security update: astro@7.1.0
+  - astro@7.1.0
