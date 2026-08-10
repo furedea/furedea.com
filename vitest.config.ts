@@ -5,8 +5,8 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   resolve: {
     alias: {
-      "@i18n": resolve(__dirname, "src/i18n"),
-      "@data": resolve(__dirname, "src/data"),
+      "@i18n": resolve(import.meta.dirname, "src/i18n"),
+      "@data": resolve(import.meta.dirname, "src/data"),
     },
   },
   test: {
