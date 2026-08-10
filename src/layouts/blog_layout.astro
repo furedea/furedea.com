@@ -151,5 +151,70 @@ const formattedDate = date.toLocaleDateString(getDateLocale(lang), {
     :global(.article-message-alert > p) {
       margin-bottom: 0;
     }
+
+    :global(.article-details) {
+      margin: 1.5rem 0;
+      padding: 0.875rem 1rem;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 0.375rem;
+    }
+
+    :global(.article-details > summary) {
+      color: var(--color-text-primary);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    :global(.article-details[open] > summary) {
+      margin-bottom: 1rem;
+    }
+
+    :global(.article-details > :last-child) {
+      margin-bottom: 0;
+    }
+
+    :global(.article-figure) {
+      margin: 1.5rem 0;
+    }
+
+    :global(.article-figure > p) {
+      margin-bottom: 0;
+    }
+
+    :global(.article-figure-caption) {
+      margin-top: 0.5rem;
+      color: var(--color-text-secondary);
+      font-size: 0.875rem;
+      text-align: center;
+    }
+
+    :global(.article-mermaid) {
+      margin: 1.5rem 0;
+      overflow-x: auto;
+      text-align: center;
+    }
   }
 </style>
+
+<script>
+  const diagrams = Array.from(
+    document.querySelectorAll<HTMLPreElement>('pre[data-language="mermaid"]'),
+  ).map((codeBlock) => {
+    const diagram = document.createElement("div");
+    diagram.className = "article-mermaid";
+    diagram.textContent = codeBlock.textContent;
+    codeBlock.replaceWith(diagram);
+    return diagram;
+  });
+
+  if (diagrams.length > 0) {
+    const { default: mermaid } = await import("mermaid");
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: "strict",
+      theme: "dark",
+    });
+    await mermaid.run({ nodes: diagrams });
+  }
+</script>

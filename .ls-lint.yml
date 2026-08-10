@@ -12,6 +12,7 @@ ignore:
   - README.md
   - CLAUDE.md
   - CONTENT_LICENSE.md
+  - articles
   - docs/adr
 
   - pnpm-lock.yaml
