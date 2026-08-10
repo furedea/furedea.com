@@ -57,8 +57,8 @@ const requiredHtml = {
     "https://x.com/",
     "https://zenn.dev/",
   ],
-  "ja/blog/index.html": ["Blog", "/ja/blog/hello_world/"],
-  "en/blog/index.html": ["Blog", "/en/blog/hello_world/"],
+  "ja/blog/index.html": ["Blog", "/ja/blog/modern-terminal-environment/"],
+  "en/blog/index.html": ["Blog"],
 };
 
 async function checkExists(relativePath) {

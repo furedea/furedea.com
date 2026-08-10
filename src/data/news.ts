@@ -9,13 +9,4 @@ export interface NewsItem {
   type: NewsType;
 }
 
-export const news: NewsItem[] = [
-  {
-    date: "2026-04-01",
-    title: {
-      ja: "個人ページを公開しました",
-      en: "Launched my personal website",
-    },
-    type: "general",
-  },
-];
+export const news: NewsItem[] = [];
