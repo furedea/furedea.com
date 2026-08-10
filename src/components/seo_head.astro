@@ -2,6 +2,7 @@
 import type { Lang } from "@i18n/ui";
 import { getLocalizedPath, getOgLocale, pickLocale, stripLocaleAndBase } from "@i18n/utils";
 import { site } from "@data/site";
+import type { SocialPreview } from "@data/site";
 import { BASE_PATH } from "../consts";
 
 interface Props {
@@ -9,16 +10,26 @@ interface Props {
   description: string;
   lang: Lang;
   noindex?: boolean;
+  socialPreview?: SocialPreview;
+  socialPreviewAlt?: string;
+  ogType?: "website" | "article";
 }
 
-const { title, description, lang, noindex = false } = Astro.props;
+const {
+  title,
+  description,
+  lang,
+  noindex = false,
+  socialPreview = site.socialPreview,
+  socialPreviewAlt = `${pickLocale(site.ownerName, lang)} — ${pickLocale(site.labName, lang)}`,
+  ogType = "website",
+} = Astro.props;
 const internalPath = stripLocaleAndBase(Astro.url.pathname);
 const origin = Astro.site?.origin ?? "";
 const canonicalUrl = `${origin}${getLocalizedPath(internalPath, lang)}`;
 const jaUrl = `${origin}${getLocalizedPath(internalPath, "ja")}`;
 const enUrl = `${origin}${getLocalizedPath(internalPath, "en")}`;
-const socialPreviewUrl = `${origin}${site.socialPreview.path}`;
-const socialPreviewAlt = `${pickLocale(site.ownerName, lang)} — ${pickLocale(site.labName, lang)}`;
+const socialPreviewUrl = `${origin}${socialPreview.path}`;
 ---
 
 <meta charset="utf-8" />
@@ -52,15 +63,15 @@ const socialPreviewAlt = `${pickLocale(site.ownerName, lang)} — ${pickLocale(s
   rel="stylesheet"
 />
 
-<meta property="og:type" content="website" />
+<meta property="og:type" content={ogType} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonicalUrl} />
 <meta property="og:locale" content={getOgLocale(lang)} />
 <meta property="og:image" content={socialPreviewUrl} />
 <meta property="og:image:type" content="image/png" />
-<meta property="og:image:width" content={String(site.socialPreview.width)} />
-<meta property="og:image:height" content={String(site.socialPreview.height)} />
+<meta property="og:image:width" content={String(socialPreview.width)} />
+<meta property="og:image:height" content={String(socialPreview.height)} />
 <meta property="og:image:alt" content={socialPreviewAlt} />
 
 <meta name="twitter:card" content="summary_large_image" />

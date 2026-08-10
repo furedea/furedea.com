@@ -6,12 +6,14 @@ interface SiteMeta {
   labName: LocalizedText;
   homeDescription: LocalizedText;
   blogDescription: LocalizedText;
-  socialPreview: {
-    path: string;
-    width: number;
-    height: number;
-  };
+  socialPreview: SocialPreview;
   notFound: Record<Lang, NotFoundText>;
+}
+
+export interface SocialPreview {
+  path: string;
+  width: number;
+  height: number;
 }
 
 interface NotFoundText {

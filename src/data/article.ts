@@ -21,6 +21,8 @@ export interface WebsiteArticleMetadata {
   title: string;
   description: string;
   date: Date;
+  emoji: string;
+  type: "tech" | "idea";
   tags: string[];
 }
 
@@ -97,6 +99,8 @@ export function toWebsiteArticleMetadata(
     title: metadata.title,
     description: getArticleDescription(markdown),
     date: metadata.published_at,
+    emoji: metadata.emoji,
+    type: metadata.type,
     tags: metadata.topics,
   };
 }

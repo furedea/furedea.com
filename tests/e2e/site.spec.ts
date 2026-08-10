@@ -38,6 +38,14 @@ test.describe("localized top pages", () => {
   });
 });
 
+test("keeps the existing circular profile portrait", async ({ page }) => {
+  await page.goto("/ja/");
+
+  const portrait = page.locator(".hero-photo");
+  await expect(portrait.locator("img")).toHaveAttribute("alt", "執行 凱斗");
+  await expect(portrait).toHaveCSS("border-radius", "50%");
+});
+
 test("root redirects to Japanese top page", async ({ page }) => {
   await page.goto("/");
 
@@ -56,6 +64,16 @@ test("publishes social preview metadata on the Japanese top page", async ({ page
   await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute(
     "content",
     "summary_large_image",
+  );
+});
+
+test("publishes generated social preview metadata on an article page", async ({ page }) => {
+  await page.goto("/ja/blog/modern-terminal-environment/");
+
+  await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "article");
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+    "content",
+    "https://furedea.com/og/articles/modern-terminal-environment.png",
   );
 });
 
@@ -80,6 +98,15 @@ test("blog card is clickable as a whole", async ({ page }) => {
       level: 1,
     }),
   ).toBeVisible();
+});
+
+test("keeps the existing blog card presentation", async ({ page }) => {
+  await page.goto("/ja/");
+
+  const card = page.locator(".blog-card", { hasText: "ぼくのかんがえたさいきょう" });
+  await expect(card.locator(".article-cover")).toHaveCount(0);
+  await expect(card.locator(".read-more")).toContainText("続きを読む");
+  await expect(card.locator(".tag-list")).toHaveCount(0);
 });
 
 test("skip link moves focus to main content", async ({ page }) => {
