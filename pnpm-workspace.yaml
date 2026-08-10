@@ -12,3 +12,5 @@ minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
   # Renovate security update: mermaid@11.16.1
   - mermaid@11.16.1
+  # Renovate security update: fast-uri@3.1.5
+  - fast-uri@3.1.5
