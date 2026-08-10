@@ -1,6 +1,6 @@
 # ADR-0007: Generate article social covers
 
-- Status: Accepted
+- Status: Superseded
 - Date: 2026-08-10
 
 In the context of presenting repository-authored articles consistently on the website and in

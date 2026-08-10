@@ -6,7 +6,7 @@ import { profile } from "@data/profile";
 // Imported from src/assets so Astro processes it at build time:
 // generates a WebP copy, embeds width/height to avoid layout shift,
 // and emits a fingerprinted URL for long-term caching. Uses sharp internally.
-import profileImage from "../assets/profile_landscape.jpg";
+import profileImage from "../assets/profile.jpg";
 import IconLink from "./icon_link.astro";
 
 interface Props {
@@ -39,9 +39,9 @@ const { lang } = Astro.props;
       <div class="hero-photo">
         <Image
           src={profileImage}
-          alt={pickLocale(profile.imageAlt, lang)}
-          width={540}
-          height={720}
+          alt={pickLocale(profile.name, lang)}
+          width={520}
+          height={520}
           loading="eager"
           format="webp"
         />
@@ -71,9 +71,9 @@ const { lang } = Astro.props;
 
   .hero-photo {
     flex: 0 0 auto;
-    width: clamp(220px, 28vw, 300px);
-    aspect-ratio: 3 / 4;
-    border-radius: 0.75rem;
+    width: clamp(220px, 28vw, 320px);
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
     overflow: hidden;
     border: 1px solid var(--color-border);
   }
@@ -82,7 +82,9 @@ const { lang } = Astro.props;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
+    object-position: 58% 22%;
+    transform: scale(1.25);
+    transform-origin: 58% 22%;
   }
 
   .hero-greeting {
