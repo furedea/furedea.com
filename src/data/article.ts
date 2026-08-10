@@ -198,7 +198,7 @@ function convertCaptions(markdown: string): string {
       return [
         "<figure>",
         `<img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}">`,
-        `<figcaption>${escapeHtml(caption)}</figcaption>`,
+        `<figcaption style="text-align: center;"><em>${escapeHtml(caption)}</em></figcaption>`,
         "</figure>",
       ].join("\n");
     },

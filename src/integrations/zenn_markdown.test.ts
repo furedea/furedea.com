@@ -189,7 +189,12 @@ test("renders emphasized text after an image as a website caption", () => {
             hName: "figcaption",
             hProperties: { className: ["article-figure-caption"] },
           },
-          children: [{ type: "text", value: "Animated example." }],
+          children: [
+            {
+              type: "emphasis",
+              children: [{ type: "text", value: "Animated example." }],
+            },
+          ],
         },
       ],
     },

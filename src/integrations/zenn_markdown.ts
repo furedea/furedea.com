@@ -20,6 +20,9 @@ export function transformZennExtensions(value: unknown): void {
   if (node.children === undefined) {
     return;
   }
+  if (node.data?.hName === "figure") {
+    return;
+  }
   const messages = transformMessageBlocks(node.children);
   node.children = transformCaptions(transformDetails(messages)).map(toWebsiteMessage);
   node.children.forEach(transformZennExtensions);
@@ -76,7 +79,7 @@ function transformCaptions(children: MarkdownNode[]): MarkdownNode[] {
       transformed.push(image);
       continue;
     }
-    transformed.push(toWebsiteFigure(image, caption.children?.[0].children ?? []));
+    transformed.push(toWebsiteFigure(image, caption.children ?? []));
     index += 1;
   }
   return transformed;
@@ -96,7 +99,7 @@ function matchInlineCaption(
   ) {
     return undefined;
   }
-  return { image, caption: emphasis.children ?? [] };
+  return { image, caption: [emphasis] };
 }
 
 function isImageParagraph(node: MarkdownNode): boolean {
