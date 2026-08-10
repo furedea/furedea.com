@@ -16,6 +16,7 @@ const requiredPaths = [
   "favicon.png",
   "apple_touch_icon.png",
   "og_image.png",
+  "og/articles/modern-terminal-environment.png",
   "_headers",
   "robots.txt",
   "sitemap-index.xml",

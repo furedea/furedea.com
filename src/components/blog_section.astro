@@ -22,8 +22,10 @@ const posts = await getLocalizedPosts(lang, 3);
           {posts.map((post) => (
             <BlogCard
               title={post.title}
-              description={post.description}
               date={post.date}
+              emoji={post.emoji}
+              type={post.type}
+              tags={post.tags}
               slug={post.id}
               lang={lang}
             />

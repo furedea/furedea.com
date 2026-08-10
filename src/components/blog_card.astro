@@ -1,36 +1,39 @@
 ---
 import type { Lang } from "@i18n/ui";
-import { useTranslations, getLocalizedPath, getDateLocale } from "@i18n/utils";
+import { getLocalizedPath, getDateLocale } from "@i18n/utils";
+import { createArticleCover } from "@data/article_cover";
+import type { WebsiteArticleMetadata } from "@data/article";
+import ArticleCover from "./article_cover.astro";
+import TagList from "./tag_list.astro";
 
-interface Props {
-  title: string;
-  description: string;
-  date: Date;
+interface Props extends Pick<WebsiteArticleMetadata, "title" | "date" | "emoji" | "type" | "tags"> {
   slug: string;
   lang: Lang;
 }
 
-const { title, description, date, slug, lang } = Astro.props;
-const t = useTranslations(lang);
+const { title, date, emoji, type, tags, slug, lang } = Astro.props;
 const formattedDate = date.toLocaleDateString(getDateLocale(lang), {
   year: "numeric",
   month: "short",
   day: "numeric",
 });
 const href = getLocalizedPath(`/blog/${slug}/`, lang);
+const cover = createArticleCover(slug, { title, emoji, type, tags });
 ---
 
 <a class="blog-card" href={href}>
-  <time datetime={date.toISOString()}>{formattedDate}</time>
-  <h3>{title}</h3>
-  <p>{description}</p>
-  <span class="read-more">{t("blog.readMore")} &rarr;</span>
+  <ArticleCover cover={cover} />
+  <div class="card-body">
+    <time datetime={date.toISOString()}>{formattedDate}</time>
+    <h3>{title}</h3>
+    {tags.length > 0 && <TagList tags={tags} />}
+  </div>
 </a>
 
 <style>
   .blog-card {
     display: block;
-    padding: 1.5rem;
+    overflow: hidden;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 0.5rem;
@@ -44,6 +47,10 @@ const href = getLocalizedPath(`/blog/${slug}/`, lang);
       border-color: var(--color-accent);
       transform: translateY(-2px);
     }
+  }
+
+  .card-body {
+    padding: 1.25rem;
   }
 
   time {
@@ -63,15 +70,4 @@ const href = getLocalizedPath(`/blog/${slug}/`, lang);
     color: var(--color-accent);
   }
 
-  p {
-    font-size: 0.9375rem;
-    color: var(--color-text-secondary);
-    margin-bottom: 0.75rem;
-  }
-
-  .read-more {
-    color: var(--color-accent);
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
 </style>

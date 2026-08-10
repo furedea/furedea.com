@@ -175,6 +175,8 @@ test("maps Zenn article metadata to the website model", () => {
     title: "Publishing one article everywhere",
     description: "The first paragraph becomes the website description.",
     date: publishedAt,
+    emoji: "📝",
+    type: "tech",
     tags: ["astro", "zenn"],
   });
 });

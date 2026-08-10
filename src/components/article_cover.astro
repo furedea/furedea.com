@@ -1,0 +1,84 @@
+---
+import type { ArticleCover } from "@data/article_cover";
+
+interface Props {
+  cover: ArticleCover;
+}
+
+const { cover } = Astro.props;
+const style = [
+  `--cover-start: ${cover.theme.backgroundStart}`,
+  `--cover-end: ${cover.theme.backgroundEnd}`,
+  `--cover-glow: ${cover.theme.glow}`,
+  `--cover-accent: ${cover.theme.accent}`,
+].join("; ");
+---
+
+<div class="article-cover" style={style} aria-hidden="true">
+  <span class="cover-label"><span></span>{cover.label}</span>
+  <span class="cover-emoji">{cover.emoji}</span>
+  <span class="cover-site">furedea.com</span>
+</div>
+
+<style>
+  .article-cover {
+    position: relative;
+    aspect-ratio: 1200 / 630;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--cover-start), var(--cover-end));
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .article-cover::after {
+    position: absolute;
+    width: 72%;
+    aspect-ratio: 1;
+    right: -18%;
+    top: -34%;
+    content: "";
+    background: radial-gradient(circle, var(--cover-glow), transparent 68%);
+    opacity: 0.82;
+  }
+
+  .cover-label,
+  .cover-site,
+  .cover-emoji {
+    position: absolute;
+    z-index: 1;
+  }
+
+  .cover-label {
+    top: 14%;
+    left: 8%;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: var(--color-text-primary);
+    font-family: var(--font-mono);
+    font-size: clamp(0.65rem, 1.3vw, 0.8rem);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+
+  .cover-label span {
+    width: 2.25rem;
+    height: 0.25rem;
+    background: var(--cover-accent);
+    border-radius: 999px;
+  }
+
+  .cover-emoji {
+    inset: 50% auto auto 66%;
+    translate: -50% -50%;
+    font-size: clamp(3.75rem, 9vw, 6.25rem);
+    filter: drop-shadow(0 0.75rem 1.25rem rgb(0 0 0 / 24%));
+  }
+
+  .cover-site {
+    left: 8%;
+    bottom: 12%;
+    color: var(--cover-accent);
+    font-family: var(--font-mono);
+    font-size: clamp(0.625rem, 1.2vw, 0.75rem);
+  }
+</style>

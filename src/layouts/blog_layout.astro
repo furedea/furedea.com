@@ -5,6 +5,7 @@ import type { Lang } from "@i18n/ui";
 import { useTranslations, getLocalizedPath, getDateLocale } from "@i18n/utils";
 import { getPageTitle } from "@data/site";
 import type { BlogPost } from "@data/blog";
+import { createArticleCover } from "@data/article_cover";
 
 interface Props {
   post: BlogPost;
@@ -19,12 +20,16 @@ const formattedDate = date.toLocaleDateString(getDateLocale(lang), {
   month: "long",
   day: "numeric",
 });
+const cover = createArticleCover(post.id, post);
 ---
 
 <BaseLayout
   title={getPageTitle(title, lang)}
   description={description}
   lang={lang}
+  socialPreview={cover.socialPreview}
+  socialPreviewAlt={`${title} — furedea.com`}
+  ogType="article"
 >
   <article class="blog-article">
     <div class="container">

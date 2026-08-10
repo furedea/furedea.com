@@ -59,6 +59,16 @@ test("publishes social preview metadata on the Japanese top page", async ({ page
   );
 });
 
+test("publishes generated social preview metadata on an article page", async ({ page }) => {
+  await page.goto("/ja/blog/modern-terminal-environment/");
+
+  await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "article");
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+    "content",
+    "https://furedea.com/og/articles/modern-terminal-environment.png",
+  );
+});
+
 test("unknown paths return the custom not-found page", async ({ page }) => {
   const response = await page.goto("/missing-page/");
 
@@ -80,6 +90,16 @@ test("blog card is clickable as a whole", async ({ page }) => {
       level: 1,
     }),
   ).toBeVisible();
+});
+
+test("blog card renders its cover from article metadata", async ({ page }) => {
+  await page.goto("/ja/");
+
+  const card = page.locator(".blog-card", { hasText: "ぼくのかんがえたさいきょう" });
+  await expect(card.locator(".article-cover")).toContainText("📝");
+  await expect(card.locator(".article-cover")).toContainText("TECH");
+  await expect(card).toContainText("terminal");
+  await expect(card.locator(".read-more")).toHaveCount(0);
 });
 
 test("skip link moves focus to main content", async ({ page }) => {
