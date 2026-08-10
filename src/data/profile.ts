@@ -15,6 +15,7 @@ interface Profile {
   affiliation: LocalizedText;
   department: LocalizedText;
   university: LocalizedText;
+  imageAlt: LocalizedText;
   email: string;
   socialLinks: SocialLink[];
 }
@@ -29,6 +30,10 @@ export const profile: Profile = {
     en: "Graduate School of Information Science and Electrical Engineering",
   },
   university: { ja: "九州大学", en: "Kyushu University" },
+  imageAlt: {
+    ja: "夕暮れの海岸に立つ執行凱斗の後ろ姿",
+    en: "Kaito Shigyo standing on a beach at dusk",
+  },
   email: "shigyo@posl.ait.kyushu-u.ac.jp",
   socialLinks: [
     { platform: "GitHub", url: "https://github.com/furedea", icon: "github" },
