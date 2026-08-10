@@ -99,3 +99,9 @@ test("mobile menu opens navigation links", async ({ page }) => {
     page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "研究" }),
   ).toBeVisible();
 });
+
+test("renders Zenn Mermaid blocks as diagrams", async ({ page }) => {
+  await page.goto("/ja/blog/modern-terminal-environment/");
+
+  await expect(page.locator(".article-mermaid svg")).toBeVisible();
+});

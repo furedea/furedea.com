@@ -189,5 +189,32 @@ const formattedDate = date.toLocaleDateString(getDateLocale(lang), {
       text-align: center;
     }
 
+    :global(.article-mermaid) {
+      margin: 1.5rem 0;
+      overflow-x: auto;
+      text-align: center;
+    }
   }
 </style>
+
+<script>
+  const diagrams = Array.from(
+    document.querySelectorAll<HTMLPreElement>('pre[data-language="mermaid"]'),
+  ).map((codeBlock) => {
+    const diagram = document.createElement("div");
+    diagram.className = "article-mermaid";
+    diagram.textContent = codeBlock.textContent;
+    codeBlock.replaceWith(diagram);
+    return diagram;
+  });
+
+  if (diagrams.length > 0) {
+    const { default: mermaid } = await import("mermaid");
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: "strict",
+      theme: "dark",
+    });
+    await mermaid.run({ nodes: diagrams });
+  }
+</script>
