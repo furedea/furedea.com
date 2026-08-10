@@ -143,3 +143,17 @@ test("uses primary text color for article prose", async ({ page }) => {
 
   await expect(page.locator(".article-body p").first()).toHaveCSS("color", "rgb(228, 228, 231)");
 });
+
+test("centers the article header and body in the viewport", async ({ page }) => {
+  await page.goto("/ja/blog/modern-terminal-environment/");
+
+  const viewportWidth = page.viewportSize()?.width;
+  const header = await page.locator(".article-header").boundingBox();
+  const body = await page.locator(".article-body").boundingBox();
+
+  expect(viewportWidth).toBeDefined();
+  expect(header).not.toBeNull();
+  expect(body).not.toBeNull();
+  expect(header!.x + header!.width / 2).toBeCloseTo(viewportWidth! / 2, 0);
+  expect(body!.x + body!.width / 2).toBeCloseTo(viewportWidth! / 2, 0);
+});

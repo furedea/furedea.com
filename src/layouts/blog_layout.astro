@@ -69,6 +69,12 @@ const cover = createArticleCover(post.id, post);
     }
   }
 
+  .article-header,
+  .article-body {
+    max-width: 42rem;
+    margin-inline: auto;
+  }
+
   .article-header h1 {
     font-size: clamp(1.5rem, 4vw, 2.5rem);
     margin-bottom: 1rem;
@@ -90,8 +96,6 @@ const cover = createArticleCover(post.id, post);
   }
 
   .article-body {
-    max-width: 42rem;
-
     :global(h2) {
       font-size: 1.5rem;
       margin-top: 2.5rem;
