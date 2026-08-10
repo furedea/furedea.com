@@ -105,3 +105,9 @@ test("renders Zenn Mermaid blocks as diagrams", async ({ page }) => {
 
   await expect(page.locator(".article-mermaid svg")).toBeVisible();
 });
+
+test("uses primary text color for article prose", async ({ page }) => {
+  await page.goto("/ja/blog/modern-terminal-environment/");
+
+  await expect(page.locator(".article-body p").first()).toHaveCSS("color", "rgb(228, 228, 231)");
+});
