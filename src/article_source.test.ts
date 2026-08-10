@@ -1,4 +1,4 @@
-import { readdir, readFile, stat } from "node:fs/promises";
+import { access, readdir, readFile, stat } from "node:fs/promises";
 import { extname } from "node:path";
 
 import { expect, test } from "vitest";
@@ -17,6 +17,17 @@ test("stores every Zenn article under a valid immutable slug", async () => {
     const source = await readFile(new URL(fileName, ARTICLES_DIR), "utf8");
     expect(fileName.replace(/\.md$/u, "")).toMatch(ZENN_SLUG_PATTERN);
     expect(() => parseZennArticleSource(source)).not.toThrow();
+  }
+});
+
+test("does not publish the placeholder welcome article", async () => {
+  const welcomeArticles = [
+    new URL("./content/blog/ja/hello_world.md", import.meta.url),
+    new URL("./content/blog/en/hello_world.md", import.meta.url),
+  ];
+
+  for (const article of welcomeArticles) {
+    await expect(access(article)).rejects.toMatchObject({ code: "ENOENT" });
   }
 });
 

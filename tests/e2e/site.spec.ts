@@ -72,9 +72,14 @@ test("unknown paths return the custom not-found page", async ({ page }) => {
 test("blog card is clickable as a whole", async ({ page }) => {
   await page.goto("/ja/");
 
-  await page.locator(".blog-card", { hasText: "はじめまして" }).click();
-  await expect(page).toHaveURL(/\/ja\/blog\/hello_world\/$/);
-  await expect(page.getByRole("heading", { name: "はじめまして", level: 1 })).toBeVisible();
+  await page.locator(".blog-card", { hasText: "ぼくのかんがえたさいきょう" }).click();
+  await expect(page).toHaveURL(/\/ja\/blog\/modern-terminal-environment\/$/);
+  await expect(
+    page.getByRole("heading", {
+      name: "ぼくのかんがえたさいきょうのターミナル環境 2026",
+      level: 1,
+    }),
+  ).toBeVisible();
 });
 
 test("skip link moves focus to main content", async ({ page }) => {
