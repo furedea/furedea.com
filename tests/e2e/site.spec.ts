@@ -100,6 +100,26 @@ test("blog card is clickable as a whole", async ({ page }) => {
   ).toBeVisible();
 });
 
+test("falls back to Japanese articles on the English site", async ({ page }) => {
+  await page.goto("/en/");
+
+  await expect(
+    page.getByRole("heading", {
+      name: "ぼくのかんがえたさいきょうのターミナル環境 2026",
+      level: 3,
+    }),
+  ).toBeVisible();
+
+  await page.locator(".blog-card", { hasText: "ぼくのかんがえたさいきょう" }).click();
+  await expect(page).toHaveURL(/\/en\/blog\/modern-terminal-environment\/$/);
+  await expect(
+    page.getByRole("heading", {
+      name: "ぼくのかんがえたさいきょうのターミナル環境 2026",
+      level: 1,
+    }),
+  ).toBeVisible();
+});
+
 test("keeps the existing blog card presentation", async ({ page }) => {
   await page.goto("/ja/");
 

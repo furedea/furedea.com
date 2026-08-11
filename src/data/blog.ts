@@ -10,8 +10,8 @@ export interface BlogPost extends WebsiteArticleMetadata {
   entry: BlogEntry;
 }
 
-export async function getLocalizedPosts(lang: Lang, limit?: number): Promise<BlogPost[]> {
-  const posts = lang === "ja" ? await getJapanesePosts() : [];
+export async function getLocalizedPosts(_lang: Lang, limit?: number): Promise<BlogPost[]> {
+  const posts = await getJapanesePosts();
   posts.sort((a, b) => b.date.getTime() - a.date.getTime());
   return typeof limit === "number" ? posts.slice(0, limit) : posts;
 }
