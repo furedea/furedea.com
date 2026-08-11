@@ -38,6 +38,13 @@ test.describe("localized top pages", () => {
   });
 });
 
+test("does not publish an unavailable email address", async ({ page }) => {
+  await page.goto("/ja/");
+
+  await expect(page.getByText("shigyo@posl.ait.kyushu-u.ac.jp", { exact: true })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "連絡先" })).toHaveCount(0);
+});
+
 test("keeps the existing circular profile portrait", async ({ page }) => {
   await page.goto("/ja/");
 

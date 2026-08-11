@@ -10,16 +10,21 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+const email = profile.email;
 ---
 
-<Section id="contact" title={t("section.contact")}>
-  <div class="contact-grid">
-    <div class="contact-item">
-      <h3>{t("contact.email")}</h3>
-      <a href={`mailto:${profile.email}`}>{profile.email}</a>
-    </div>
-  </div>
-</Section>
+{
+  email && (
+    <Section id="contact" title={t("section.contact")}>
+      <div class="contact-grid">
+        <div class="contact-item">
+          <h3>{t("contact.email")}</h3>
+          <a href={`mailto:${email}`}>{email}</a>
+        </div>
+      </div>
+    </Section>
+  )
+}
 
 <style>
   .contact-grid {

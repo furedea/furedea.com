@@ -9,7 +9,7 @@ import PublicationsSection from "@components/publications_section.astro";
 import NewsSection from "@components/news_section.astro";
 import BlogSection from "@components/blog_section.astro";
 import ContactSection from "@components/contact_section.astro";
-import { HOME_SECTIONS, type HomeSectionId } from "@data/sections";
+import { getVisibleHomeSections, type HomeSectionId } from "@data/sections";
 import { getHomeTitle, site } from "@data/site";
 import { pickLocale } from "@i18n/utils";
 
@@ -31,6 +31,7 @@ export function getStaticPaths() {
 }
 
 const lang = Astro.params.lang as Lang;
+const sections = getVisibleHomeSections();
 ---
 
 <BaseLayout
@@ -40,7 +41,7 @@ const lang = Astro.params.lang as Lang;
 >
   <HeroSection lang={lang} />
   {
-    HOME_SECTIONS.map((id) => {
+    sections.map((id) => {
       const Section = sectionComponents[id] as SectionComponent;
       return <Section lang={lang} />;
     })
