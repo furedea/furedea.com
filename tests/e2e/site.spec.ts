@@ -45,6 +45,31 @@ test("does not publish an unavailable email address", async ({ page }) => {
   await expect(page.getByRole("link", { name: "連絡先" })).toHaveCount(0);
 });
 
+test("shows the SIGSS presentation in news", async ({ page }) => {
+  await page.goto("/ja/");
+
+  await expect(
+    page.getByRole("link", { name: "SIGSS 2026年7月研究会で研究発表を行いました．" }),
+  ).toHaveAttribute("href", "https://ken.ieice.org/ken/paper/202607247cwN/");
+});
+
+test("shows the SIGSS technical report in publications", async ({ page }) => {
+  await page.goto("/en/");
+
+  const publication = page.locator(".pub-entry", {
+    hasText: "Evaluating Coding Agents for Refactoring Under Project-Specific Conventions",
+  });
+  await expect(
+    publication.getByRole("link", {
+      name: "Evaluating Coding Agents for Refactoring Under Project-Specific Conventions",
+    }),
+  ).toHaveAttribute("href", "https://ken.ieice.org/ken/paper/202607247cwN/");
+  await expect(publication).toContainText("Kaito Shigyo, Masanari Kondo, Yasutaka Kamei");
+  await expect(publication).toContainText(
+    "IEICE Technical Report, vol. 126, no. 125, SS2026-27, pp. 157–162, 2026",
+  );
+});
+
 test("keeps the existing circular profile portrait", async ({ page }) => {
   await page.goto("/ja/");
 
