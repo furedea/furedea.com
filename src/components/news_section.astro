@@ -1,7 +1,7 @@
 ---
 import type { Lang } from "@i18n/ui";
 import { useTranslations } from "@i18n/utils";
-import { news } from "@data/news";
+import { getNews } from "@data/news";
 import Section from "./section.astro";
 import NewsEntry from "./news_entry.astro";
 
@@ -11,6 +11,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+const news = await getNews();
 ---
 
 <Section id="news" title={t("section.news")}>

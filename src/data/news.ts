@@ -1,22 +1,11 @@
-import type { LocalizedText } from "@i18n/ui";
+import { getCollection } from "astro:content";
 
-export type NewsType = "paper" | "talk" | "award" | "general";
+import { toNewsItems } from "./site_records";
+import type { NewsItem } from "./site_records";
 
-export interface NewsItem {
-  date: string;
-  title: LocalizedText;
-  url?: string;
-  type: NewsType;
+export type { NewsItem } from "./site_records";
+
+export async function getNews(): Promise<NewsItem[]> {
+  const entries = await getCollection("siteRecords");
+  return toNewsItems(entries.map(({ data }) => data));
 }
-
-export const news: NewsItem[] = [
-  {
-    date: "2026-07-24",
-    title: {
-      ja: "SIGSS 2026年7月研究会で研究発表を行いました．",
-      en: "Presented our work at the July 2026 SIGSS meeting.",
-    },
-    url: "https://ken.ieice.org/ken/paper/202607247cwN/",
-    type: "talk",
-  },
-];
