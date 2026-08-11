@@ -11,7 +11,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const publications = await getPublications();
+const publications = await getPublications(lang);
 ---
 
 <Section id="publications" title={t("section.publications")}>
@@ -19,7 +19,7 @@ const publications = await getPublications();
     publications.length > 0 ? (
       <ul class="pub-list">
         {publications.map((pub) => (
-          <PublicationEntry pub={pub} />
+          <PublicationEntry pub={pub} lang={lang} />
         ))}
       </ul>
     ) : (

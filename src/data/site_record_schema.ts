@@ -20,12 +20,13 @@ const publicationNewsSchema = newsSchema.omit({ url: true }).strict();
 
 export const publicationSchema = z
   .object({
-    title: z.string().min(1),
-    authors: z.array(z.string().min(1)).min(1),
-    venue: z.string().min(1),
-    venueShort: z.string().min(1).optional(),
+    title: localizedTextSchema,
+    authors: z.array(localizedTextSchema).min(1),
+    venue: localizedTextSchema,
+    venueShort: localizedTextSchema.optional(),
     year: z.number().int().positive(),
-    type: z.enum(["journal", "conference", "workshop", "preprint", "thesis"]),
+    type: z.enum(["journal", "conference", "workshop", "technical-report", "preprint", "thesis"]),
+    peerReviewed: z.boolean(),
     url: z.url().optional(),
     pdfUrl: z.url().optional(),
     slidesUrl: z.url().optional(),

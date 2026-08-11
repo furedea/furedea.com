@@ -64,6 +64,12 @@ test("renders publication collection metadata", async ({ page }) => {
   await expect(publication.locator(".pub-venue")).toContainText(/, \d{4}$/);
 });
 
+test("labels non-peer-reviewed publications on Japanese pages", async ({ page }) => {
+  await page.goto("/ja/");
+
+  await expect(page.locator(".pub-review-status").first()).toHaveText("査読なし");
+});
+
 test("keeps the existing circular profile portrait", async ({ page }) => {
   await page.goto("/ja/");
 

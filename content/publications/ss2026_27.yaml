@@ -1,11 +1,19 @@
-title: "Evaluating Coding Agents for Refactoring Under Project-Specific Conventions"
+title:
+  ja: "プロジェクト固有規約に準拠したリファクタリングにおけるコーディングエージェントの性能評価"
+  en: "Evaluating Coding Agents for Refactoring Under Project-Specific Conventions"
 authors:
-  - "Kaito Shigyo"
-  - "Masanari Kondo"
-  - "Yasutaka Kamei"
-venue: "IEICE Technical Report, vol. 126, no. 125, SS2026-27, pp. 157–162"
+  - ja: "執行 凱斗"
+    en: "Kaito Shigyo"
+  - ja: "近藤 将成"
+    en: "Masanari Kondo"
+  - ja: "亀井 靖高"
+    en: "Yasutaka Kamei"
+venue:
+  ja: "電子情報通信学会技術研究報告，vol. 126，no. 125，SS2026-27，pp. 157–162"
+  en: "IEICE Technical Report, vol. 126, no. 125, SS2026-27, pp. 157–162"
 year: 2026
-type: "workshop"
+type: "technical-report"
+peerReviewed: false
 url: "https://ken.ieice.org/ken/paper/202607247cwN/"
 news:
   date: "2026-07-24"
