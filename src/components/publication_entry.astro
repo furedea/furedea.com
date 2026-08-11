@@ -1,12 +1,17 @@
 ---
 import type { Publication } from "@data/publications";
+import type { Lang } from "@i18n/ui";
+import { useTranslations } from "@i18n/utils";
 import OptionalLink from "./optional_link.astro";
 
 interface Props {
   pub: Publication;
+  lang: Lang;
 }
 
-const { pub } = Astro.props;
+const { pub, lang } = Astro.props;
+const t = useTranslations(lang);
+const citationSuffix = lang === "ja" ? `，${pub.year}年` : `, ${pub.year}`;
 ---
 
 <li class="pub-entry">
@@ -15,8 +20,9 @@ const { pub } = Astro.props;
   </p>
   <p class="pub-authors">{pub.authors}</p>
   <p class="pub-venue">
-    {pub.venueShort ?? pub.venue}, {pub.year}
+    {pub.venueShort ?? pub.venue}{citationSuffix}
   </p>
+  {!pub.peerReviewed && <span class="pub-review-status">{t("publications.nonPeerReviewed")}</span>}
   <div class="pub-links">
     {pub.pdfUrl && <a href={pub.pdfUrl} rel="noopener">PDF</a>}
     {pub.slidesUrl && <a href={pub.slidesUrl} rel="noopener">Slides</a>}
@@ -46,6 +52,16 @@ const { pub } = Astro.props;
     font-size: 0.875rem;
     color: var(--color-text-secondary);
     font-style: italic;
+  }
+
+  .pub-review-status {
+    display: inline-block;
+    margin-top: 0.375rem;
+    padding: 0.125rem 0.375rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.1875rem;
+    color: var(--color-text-secondary);
+    font-size: 0.75rem;
   }
 
   .pub-links {

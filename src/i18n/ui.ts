@@ -36,6 +36,7 @@ export const ui = {
     "footer.copyright": "All rights reserved.",
     "news.empty": "ニュースはまだありません",
     "publications.empty": "準備中",
+    "publications.nonPeerReviewed": "査読なし",
   },
   en: {
     "nav.home": "Home",
@@ -63,5 +64,6 @@ export const ui = {
     "footer.copyright": "All rights reserved.",
     "news.empty": "No news yet",
     "publications.empty": "Coming soon",
+    "publications.nonPeerReviewed": "Non-peer-reviewed",
   },
 } as const;
