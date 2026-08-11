@@ -3,6 +3,11 @@ import { expect, test } from "vitest";
 import type { EsaPostPayload } from "../data/article";
 import { findEsaPost, publishEsaPost, upsertEsaPost } from "./esa";
 
+type ExistingEsaPost = Omit<EsaPostPayload["post"], "message"> & {
+  number: number;
+  url: string;
+};
+
 const ACCESS_TOKEN = ["test", "value"].join("-");
 const PAYLOAD: EsaPostPayload = {
   post: {
@@ -56,43 +61,73 @@ test("finds an existing esa copy by its canonical website URL", async () => {
   ]);
 });
 
-test("updates the esa copy found by its canonical website URL", async () => {
+test("updates a shipped esa copy without sending notices", async () => {
   const canonicalUrl = "https://furedea.com/ja/blog/article-publishing/";
-  const requests: Array<{ url: string; options: RequestInit | undefined }> = [];
-  const fetcher: typeof fetch = async (input, options) => {
-    const url = input instanceof Request ? input.url : input.toString();
-    requests.push({ url, options });
-    if (options?.method === undefined) {
-      return Response.json({
-        posts: [
-          {
-            number: 42,
-            url: "https://example-team.esa.io/posts/42",
-            name: "Old title",
-            body_md: `Originally published at ${canonicalUrl}`,
-            tags: PAYLOAD.post.tags,
-            category: PAYLOAD.post.category,
-            wip: PAYLOAD.post.wip,
-          },
-        ],
-      });
-    }
-    return Response.json({ number: 42, url: "https://example-team.esa.io/posts/42" });
+  const payload: EsaPostPayload = {
+    post: {
+      ...PAYLOAD.post,
+      body_md: `Article body.\n\nOriginally published at ${canonicalUrl}`,
+      wip: false,
+    },
   };
-
-  await expect(
-    upsertEsaPost({
-      team: "example-team",
-      accessToken: ACCESS_TOKEN,
-      canonicalUrl,
-      payload: PAYLOAD,
-      fetcher,
-    }),
-  ).resolves.toEqual({ number: 42, url: "https://example-team.esa.io/posts/42" });
-  expect(requests[1]).toMatchObject({
-    url: "https://api.esa.io/v1/teams/example-team/posts/42",
-    options: { method: "PATCH" },
+  const requests: Array<{ url: string; options: RequestInit | undefined }> = [];
+  const fetcher = createUpsertFetchStub(requests, {
+    number: 42,
+    url: "https://example-team.esa.io/posts/42",
+    name: "Old title",
+    body_md: `Originally published at ${canonicalUrl}`,
+    tags: payload.post.tags,
+    category: payload.post.category,
+    wip: false,
   });
+
+  await upsertEsaPost({
+    team: "example-team",
+    accessToken: ACCESS_TOKEN,
+    canonicalUrl,
+    payload,
+    fetcher,
+  });
+
+  expect(requests[1]?.options?.body).toBe(
+    JSON.stringify({
+      post: {
+        ...payload.post,
+        message: "Sync from furedea.com. [skip notice]",
+      },
+    }),
+  );
+});
+
+test("ships a WIP esa copy with notices enabled", async () => {
+  const canonicalUrl = "https://furedea.com/ja/blog/article-publishing/";
+  const payload: EsaPostPayload = {
+    post: {
+      ...PAYLOAD.post,
+      body_md: `Article body.\n\nOriginally published at ${canonicalUrl}`,
+      wip: false,
+    },
+  };
+  const requests: Array<{ url: string; options: RequestInit | undefined }> = [];
+  const fetcher = createUpsertFetchStub(requests, {
+    number: 42,
+    url: "https://example-team.esa.io/posts/42",
+    name: payload.post.name,
+    body_md: payload.post.body_md,
+    tags: payload.post.tags,
+    category: payload.post.category,
+    wip: true,
+  });
+
+  await upsertEsaPost({
+    team: "example-team",
+    accessToken: ACCESS_TOKEN,
+    canonicalUrl,
+    payload,
+    fetcher,
+  });
+
+  expect(requests[1]?.options?.body).toBe(JSON.stringify(payload));
 });
 
 test("does not create a new esa revision when the copy already matches", async () => {
@@ -216,6 +251,21 @@ test("reports esa API failures without exposing the access token", async () => {
     }),
   ).rejects.toThrow("esa API request failed with 403");
 });
+
+function createUpsertFetchStub(
+  requests: Array<{ url: string; options: RequestInit | undefined }>,
+  existingPost: ExistingEsaPost,
+): typeof fetch {
+  return async (input, options) => {
+    requests.push({
+      url: input instanceof Request ? input.url : input.toString(),
+      options,
+    });
+    return options?.method === undefined
+      ? Response.json({ posts: [existingPost] })
+      : Response.json({ number: 42, url: "https://example-team.esa.io/posts/42" });
+  };
+}
 
 function createFetchStub(
   requests: Array<{ url: string; options: RequestInit | undefined }>,

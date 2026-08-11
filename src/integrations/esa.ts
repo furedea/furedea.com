@@ -46,9 +46,27 @@ export async function upsertEsaPost(options: EsaUpserterOptions): Promise<EsaPos
     team: options.team,
     accessToken: options.accessToken,
     postNumber: existingPost?.number,
-    payload: options.payload,
+    payload: shouldSkipNotices(existingPost, options.payload)
+      ? skipNotices(options.payload)
+      : options.payload,
     fetcher: options.fetcher,
   });
+}
+
+function shouldSkipNotices(
+  existingPost: EsaPostSummary | undefined,
+  payload: EsaPostPayload,
+): boolean {
+  return existingPost?.wip === false && payload.post.wip === false;
+}
+
+function skipNotices(payload: EsaPostPayload): EsaPostPayload {
+  return {
+    post: {
+      ...payload.post,
+      message: `${payload.post.message} [skip notice]`,
+    },
+  };
 }
 
 async function findEsaPostSummary(options: EsaFinderOptions): Promise<EsaPostSummary | undefined> {
