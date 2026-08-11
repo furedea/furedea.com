@@ -2,7 +2,7 @@
 import type { Lang } from "@i18n/ui";
 import { useTranslations, getLocalePrefix, pickLocale } from "@i18n/utils";
 import { site } from "@data/site";
-import { HOME_SECTIONS } from "@data/sections";
+import { getVisibleHomeSections } from "@data/sections";
 import LanguageToggle from "./language_toggle.astro";
 
 interface Props {
@@ -12,6 +12,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const base = getLocalePrefix(lang);
+const sections = getVisibleHomeSections();
 ---
 
 <header class="site-header">
@@ -32,7 +33,7 @@ const base = getLocalePrefix(lang);
     <nav id="nav-menu" class="site-nav" aria-label="Main">
       <ul>
         {
-          HOME_SECTIONS.map((id) => (
+          sections.map((id) => (
             <li>
               <a href={`${base}/#${id}`}>{t(`nav.${id}`)}</a>
             </li>

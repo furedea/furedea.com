@@ -10,6 +10,7 @@ const requiredPaths = [
   "en/index.html",
   "ja/blog/index.html",
   "en/blog/index.html",
+  "en/blog/modern-terminal-environment/index.html",
   "images",
   "_astro",
   "favicon.svg",
@@ -59,7 +60,7 @@ const requiredHtml = {
     "https://zenn.dev/",
   ],
   "ja/blog/index.html": ["Blog", "/ja/blog/modern-terminal-environment/"],
-  "en/blog/index.html": ["Blog"],
+  "en/blog/index.html": ["Blog", "/en/blog/modern-terminal-environment/"],
 };
 
 async function checkExists(relativePath) {

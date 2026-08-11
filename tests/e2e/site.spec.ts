@@ -38,6 +38,32 @@ test.describe("localized top pages", () => {
   });
 });
 
+test("does not publish an unavailable email address", async ({ page }) => {
+  await page.goto("/ja/");
+
+  await expect(page.getByText("shigyo@posl.ait.kyushu-u.ac.jp", { exact: true })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "連絡先" })).toHaveCount(0);
+});
+
+test("renders news collection records", async ({ page }) => {
+  await page.goto("/ja/");
+
+  const entry = page.locator(".news-entry").first();
+  await expect(entry).toBeVisible();
+  await expect(entry.locator("time")).toHaveAttribute("datetime", /^\d{4}-\d{2}-\d{2}$/);
+  await expect(entry.locator(".badge")).toHaveText(/^(paper|talk|award|general)$/);
+});
+
+test("renders publication collection metadata", async ({ page }) => {
+  await page.goto("/en/");
+
+  const publication = page.locator(".pub-entry").first();
+  await expect(publication).toBeVisible();
+  await expect(publication.locator(".pub-title")).toContainText(/\S/);
+  await expect(publication.locator(".pub-authors")).toContainText(/\S/);
+  await expect(publication.locator(".pub-venue")).toContainText(/, \d{4}$/);
+});
+
 test("keeps the existing circular profile portrait", async ({ page }) => {
   await page.goto("/ja/");
 
@@ -92,6 +118,26 @@ test("blog card is clickable as a whole", async ({ page }) => {
 
   await page.locator(".blog-card", { hasText: "ぼくのかんがえたさいきょう" }).click();
   await expect(page).toHaveURL(/\/ja\/blog\/modern-terminal-environment\/$/);
+  await expect(
+    page.getByRole("heading", {
+      name: "ぼくのかんがえたさいきょうのターミナル環境 2026",
+      level: 1,
+    }),
+  ).toBeVisible();
+});
+
+test("falls back to Japanese articles on the English site", async ({ page }) => {
+  await page.goto("/en/");
+
+  await expect(
+    page.getByRole("heading", {
+      name: "ぼくのかんがえたさいきょうのターミナル環境 2026",
+      level: 3,
+    }),
+  ).toBeVisible();
+
+  await page.locator(".blog-card", { hasText: "ぼくのかんがえたさいきょう" }).click();
+  await expect(page).toHaveURL(/\/en\/blog\/modern-terminal-environment\/$/);
   await expect(
     page.getByRole("heading", {
       name: "ぼくのかんがえたさいきょうのターミナル環境 2026",

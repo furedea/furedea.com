@@ -2,6 +2,8 @@ import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 import { defineCollection } from "astro:content";
 
+import { siteRecordSchema } from "./data/site_record_schema";
+
 const articleSchema = z.object({
   title: z.string().min(1),
   emoji: z.string().min(1),
@@ -16,4 +18,9 @@ const articleJa = defineCollection({
   schema: articleSchema,
 });
 
-export const collections = { articleJa };
+const siteRecords = defineCollection({
+  loader: glob({ base: "./content", pattern: "**/*.yaml" }),
+  schema: siteRecordSchema,
+});
+
+export const collections = { articleJa, siteRecords };

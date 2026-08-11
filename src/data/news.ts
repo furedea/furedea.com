@@ -1,12 +1,11 @@
-import type { LocalizedText } from "@i18n/ui";
+import { getCollection } from "astro:content";
 
-export type NewsType = "paper" | "talk" | "award" | "general";
+import { toNewsItems } from "./site_records";
+import type { NewsItem } from "./site_records";
 
-export interface NewsItem {
-  date: string;
-  title: LocalizedText;
-  url?: string;
-  type: NewsType;
+export type { NewsItem } from "./site_records";
+
+export async function getNews(): Promise<NewsItem[]> {
+  const entries = await getCollection("siteRecords");
+  return toNewsItems(entries.map(({ data }) => data));
 }
-
-export const news: NewsItem[] = [];
