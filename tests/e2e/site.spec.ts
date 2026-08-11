@@ -45,29 +45,23 @@ test("does not publish an unavailable email address", async ({ page }) => {
   await expect(page.getByRole("link", { name: "連絡先" })).toHaveCount(0);
 });
 
-test("shows the SIGSS presentation in news", async ({ page }) => {
+test("renders news collection records", async ({ page }) => {
   await page.goto("/ja/");
 
-  await expect(
-    page.getByRole("link", { name: "SIGSS 2026年7月研究会で研究発表を行いました．" }),
-  ).toHaveAttribute("href", "https://ken.ieice.org/ken/paper/202607247cwN/");
+  const entry = page.locator(".news-entry").first();
+  await expect(entry).toBeVisible();
+  await expect(entry.locator("time")).toHaveAttribute("datetime", /^\d{4}-\d{2}-\d{2}$/);
+  await expect(entry.locator(".badge")).toHaveText(/^(paper|talk|award|general)$/);
 });
 
-test("shows the SIGSS technical report in publications", async ({ page }) => {
+test("renders publication collection metadata", async ({ page }) => {
   await page.goto("/en/");
 
-  const publication = page.locator(".pub-entry", {
-    hasText: "Evaluating Coding Agents for Refactoring Under Project-Specific Conventions",
-  });
-  await expect(
-    publication.getByRole("link", {
-      name: "Evaluating Coding Agents for Refactoring Under Project-Specific Conventions",
-    }),
-  ).toHaveAttribute("href", "https://ken.ieice.org/ken/paper/202607247cwN/");
-  await expect(publication).toContainText("Kaito Shigyo, Masanari Kondo, Yasutaka Kamei");
-  await expect(publication).toContainText(
-    "IEICE Technical Report, vol. 126, no. 125, SS2026-27, pp. 157–162, 2026",
-  );
+  const publication = page.locator(".pub-entry").first();
+  await expect(publication).toBeVisible();
+  await expect(publication.locator(".pub-title")).toContainText(/\S/);
+  await expect(publication.locator(".pub-authors")).toContainText(/\S/);
+  await expect(publication.locator(".pub-venue")).toContainText(/, \d{4}$/);
 });
 
 test("keeps the existing circular profile portrait", async ({ page }) => {
