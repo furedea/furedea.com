@@ -113,6 +113,25 @@ test("publishes generated social preview metadata on an article page", async ({ 
   );
 });
 
+test("loads critical article resources only from the site origin", async ({ page }) => {
+  const externalOrigins = new Set<string>();
+  page.on("request", (request) => {
+    const url = new URL(request.url());
+    const isCriticalResource = ["font", "script", "stylesheet"].includes(request.resourceType());
+    if (
+      isCriticalResource &&
+      url.protocol.startsWith("http") &&
+      url.origin !== "http://127.0.0.1:4321"
+    ) {
+      externalOrigins.add(url.origin);
+    }
+  });
+
+  await page.goto("/en/blog/modern-terminal-environment/", { waitUntil: "networkidle" });
+
+  expect([...externalOrigins]).toEqual([]);
+});
+
 test("unknown paths return the custom not-found page", async ({ page }) => {
   const response = await page.goto("/missing-page/");
 
