@@ -18,7 +18,5 @@ coverage/
 dist/
 playwright-report/
 test-results/
-.lighthouseci/
-lighthouse-results/
 
 .claude/settings.local.json
