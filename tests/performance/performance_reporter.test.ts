@@ -7,10 +7,13 @@ import { parsePerformanceResult } from "./performance_reporter";
 
 describe("performance reporter", () => {
   test("combines an attached measurement with the final Playwright status", () => {
+    const measuredMetrics = metrics(1_200);
     const measurement: Omit<PerformanceReportEntry, "status"> = {
       budget: metrics(2_800),
-      metrics: metrics(1_200),
+      metrics: measuredMetrics,
       route: "/ja/",
+      samples: [measuredMetrics],
+      wasExtended: false,
     };
 
     expect(parsePerformanceResult(Buffer.from(JSON.stringify(measurement)), "failed")).toEqual({

@@ -6,7 +6,7 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   retries: 0,
-  timeout: 120_000,
+  timeout: 180_000,
   outputDir: "test-results/performance",
   reporter: [["list"], ["./tests/performance/performance_reporter.ts"]],
   webServer: {

@@ -1,6 +1,6 @@
 # ADR-0011: Enforce performance budgets with Playwright
 
-- Status: Accepted
+- Status: Superseded by ADR-0012
 - Date: 2026-08-14
 
 In the context of guarding the static Astro site's performance as published pages increase,
