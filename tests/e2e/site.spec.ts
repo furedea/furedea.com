@@ -87,6 +87,10 @@ test("root redirects to Japanese top page", async ({ page }) => {
 test("publishes social preview metadata on the Japanese top page", async ({ page }) => {
   await page.goto("/ja/");
 
+  await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute(
+    "content",
+    profile.name.en,
+  );
   await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
     "content",
     "https://furedea.com/og_image.png",

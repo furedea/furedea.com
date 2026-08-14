@@ -3,6 +3,7 @@ import { getLocalizedPath, pickLocale } from "@i18n/utils";
 
 import type { WebsiteArticleMetadata } from "./article";
 import { profile } from "./profile";
+import { site } from "./site";
 
 export type JsonLd = Record<string, unknown>;
 
@@ -15,6 +16,18 @@ interface BlogPostingJsonLdOptions {
 
 export function serializeJsonLd(data: JsonLd): string {
   return JSON.stringify(data).replaceAll("<", "\\u003c");
+}
+
+export function createWebSiteJsonLd(pageUrl: string): JsonLd {
+  const url = new URL(pageUrl);
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": new URL("/#website", url).href,
+    url: url.href,
+    name: site.ownerName.en,
+    alternateName: [site.ownerName.ja, url.hostname],
+  };
 }
 
 export function createProfilePageJsonLd(lang: Lang, pageUrl: string): JsonLd {

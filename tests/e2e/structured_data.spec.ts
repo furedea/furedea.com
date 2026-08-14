@@ -2,6 +2,22 @@ import { expect, test } from "@playwright/test";
 
 import { profile } from "../../src/data/profile";
 
+test("publishes the canonical site identity on the domain homepage", async ({ request }) => {
+  const response = await request.get("/");
+  const source = await response.text();
+  const jsonLd = source.match(
+    /<script[^>]+type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/u,
+  )?.[1];
+
+  expect(jsonLd).toBeDefined();
+  expect(JSON.parse(jsonLd ?? "")).toMatchObject({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "https://furedea.com/#website",
+    url: "https://furedea.com/",
+  });
+});
+
 test("describes the homepage as a profile page", async ({ page }) => {
   await page.goto("/ja/");
 
