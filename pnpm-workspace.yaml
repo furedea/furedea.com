@@ -14,8 +14,8 @@ minimumReleaseAgeExclude:
   - dompurify@3.4.13
   # Renovate security update: mermaid@11.16.1
   - mermaid@11.16.1
-  # Security remediation: nanoid zero-size infinite loop.
-  - nanoid@3.3.17
+  # Security remediation: nanoid zero-size infinite loop. || 3.3.18
+  - nanoid@3.3.17 || 3.3.18
   # Renovate security update: fast-uri@3.1.5
   - fast-uri@3.1.5
   # Renovate security update: js-yaml@4.3.1
