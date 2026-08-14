@@ -53,9 +53,9 @@ creates a missing post, updates a different post, and leaves an identical post u
 - `articles/`: Zenn-compatible Japanese articles
 - `article_config.json`: non-secret publishing destination settings
 - `images/`: images shared by Zenn, esa exports, and the website
-- `src/content/blog/ja/`: Japanese posts created before shared publishing
-- `src/content/blog/en/`: English blog posts
-- `src/data/`: profile, research, publication, and site data
+- `content/news/`: standalone bilingual news records
+- `content/publications/`: bilingual publication records and their optional News announcements
+- `src/data/`: typed profile, research, education, and content transformation code
 - `public/`: files copied directly into the production build
 
 ## Deployment
