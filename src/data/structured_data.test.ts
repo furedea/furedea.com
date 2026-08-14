@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import { site } from "./site";
+import { profile } from "./profile";
 import { createWebSiteJsonLd, serializeJsonLd } from "./structured_data";
 
 test("describes the canonical site name on the domain homepage", () => {
@@ -9,8 +9,8 @@ test("describes the canonical site name on the domain homepage", () => {
     "@type": "WebSite",
     "@id": "https://furedea.com/#website",
     url: "https://furedea.com/",
-    name: site.ownerName.en,
-    alternateName: [site.ownerName.ja, "furedea.com"],
+    name: profile.name.en,
+    alternateName: [profile.name.ja, "furedea.com"],
   });
 });
 

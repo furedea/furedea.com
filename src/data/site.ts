@@ -1,8 +1,8 @@
 import type { Lang, LocalizedText } from "@i18n/ui";
-import { pickLocale } from "@i18n/utils";
+
+import { profile } from "./profile";
 
 interface SiteMeta {
-  ownerName: LocalizedText;
   labName: LocalizedText;
   homeDescription: LocalizedText;
   blogDescription: LocalizedText;
@@ -23,10 +23,6 @@ interface NotFoundText {
 }
 
 export const site: SiteMeta = {
-  ownerName: {
-    ja: "執行 凱斗",
-    en: "Kaito Shigyo",
-  },
   labName: {
     ja: "POSL研究室",
     en: "POSL Lab",
@@ -58,10 +54,10 @@ export const site: SiteMeta = {
   },
 };
 
-export function getHomeTitle(lang: Lang): string {
-  return `${pickLocale(site.ownerName, lang)} | ${pickLocale(site.labName, lang)}`;
+export function getHomeTitle(): string {
+  return profile.name.en;
 }
 
-export function getPageTitle(subject: string, lang: Lang): string {
-  return `${subject} | ${pickLocale(site.ownerName, lang)}`;
+export function getPageTitle(subject: string): string {
+  return `${subject} — ${profile.name.en}`;
 }

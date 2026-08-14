@@ -6,23 +6,10 @@ import { profile } from "./profile";
 import { research } from "./research";
 import { getHomeTitle, getPageTitle, site } from "./site";
 
-describe("getHomeTitle", () => {
-  test("builds Japanese home title", () => {
-    expect(getHomeTitle("ja")).toBe("執行 凱斗 | POSL研究室");
-  });
-
-  test("builds English home title", () => {
-    expect(getHomeTitle("en")).toBe("Kaito Shigyo | POSL Lab");
-  });
-});
-
-describe("getPageTitle", () => {
-  test("prepends subject before Japanese owner name", () => {
-    expect(getPageTitle("Blog", "ja")).toBe("Blog | 執行 凱斗");
-  });
-
-  test("prepends subject before English owner name", () => {
-    expect(getPageTitle("Blog", "en")).toBe("Blog | Kaito Shigyo");
+describe("site titles", () => {
+  test("uses the English profile name without a home-page qualifier", () => {
+    expect(getHomeTitle()).toBe("Kaito Shigyo");
+    expect(getPageTitle("Blog")).toBe("Blog — Kaito Shigyo");
   });
 });
 

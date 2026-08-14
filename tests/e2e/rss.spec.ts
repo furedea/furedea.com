@@ -6,6 +6,7 @@ test("publishes one discoverable RSS feed with Japanese article URLs", async ({
 }) => {
   await page.goto("/ja/blog/");
 
+  await expect(page).toHaveTitle("Blog — Kaito Shigyo");
   await expect(page.locator('link[rel="alternate"][type="application/rss+xml"]')).toHaveAttribute(
     "href",
     "/rss.xml",
