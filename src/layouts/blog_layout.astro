@@ -6,6 +6,7 @@ import { useTranslations, getLocalizedPath, getDateLocale } from "@i18n/utils";
 import { getPageTitle } from "@data/site";
 import type { BlogPost } from "@data/blog";
 import { createArticleCover } from "@data/article_cover";
+import { createBlogPostingJsonLd } from "@data/structured_data";
 
 interface Props {
   post: BlogPost;
@@ -21,6 +22,16 @@ const formattedDate = date.toLocaleDateString(getDateLocale(lang), {
   day: "numeric",
 });
 const cover = createArticleCover(post.id, post);
+const pageUrl = new URL(
+  getLocalizedPath(`/blog/${post.id}/`, lang),
+  Astro.site ?? Astro.url,
+).href;
+const structuredData = createBlogPostingJsonLd({
+  article: post,
+  lang,
+  pageUrl,
+  imageUrl: new URL(cover.socialPreview.path, pageUrl).href,
+});
 ---
 
 <BaseLayout
@@ -30,6 +41,7 @@ const cover = createArticleCover(post.id, post);
   socialPreview={cover.socialPreview}
   socialPreviewAlt={`${title} — furedea.com`}
   ogType="article"
+  structuredData={structuredData}
 >
   <article class="blog-article">
     <div class="container">
