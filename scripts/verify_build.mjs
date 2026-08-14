@@ -16,6 +16,7 @@ const requiredPaths = [
   "favicon.svg",
   "favicon.png",
   "apple_touch_icon.png",
+  "rss.xml",
   "og_image.png",
   "og/articles/modern-terminal-environment.png",
   "_headers",

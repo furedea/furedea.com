@@ -55,6 +55,12 @@ const socialPreviewUrl = `${origin}${socialPreview.path}`;
   href={`${BASE_PATH}/apple_touch_icon.png`}
 />
 <link rel="sitemap" href={`${BASE_PATH}/sitemap-index.xml`} />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title={`${pickLocale(site.ownerName, lang)} RSS`}
+  href={`${BASE_PATH}/rss.xml`}
+/>
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
