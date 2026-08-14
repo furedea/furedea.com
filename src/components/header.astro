@@ -1,6 +1,6 @@
 ---
 import type { Lang } from "@i18n/ui";
-import { useTranslations, getLocalePrefix, pickLocale } from "@i18n/utils";
+import { useTranslations, getLocalePrefix } from "@i18n/utils";
 import { site } from "@data/site";
 import { getVisibleHomeSections } from "@data/sections";
 import LanguageToggle from "./language_toggle.astro";
@@ -19,7 +19,7 @@ const sections = getVisibleHomeSections();
 <header class="site-header">
   <div class="container header-inner">
     <a class="site-logo" href={`${base}/`}>
-      {pickLocale(site.ownerName, lang)}
+      {site.brandName}
     </a>
 
     <button

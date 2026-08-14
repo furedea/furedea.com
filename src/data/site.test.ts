@@ -6,23 +6,11 @@ import { profile } from "./profile";
 import { research } from "./research";
 import { getHomeTitle, getPageTitle, site } from "./site";
 
-describe("getHomeTitle", () => {
-  test("builds Japanese home title", () => {
-    expect(getHomeTitle("ja")).toBe("執行 凱斗 | POSL研究室");
-  });
-
-  test("builds English home title", () => {
-    expect(getHomeTitle("en")).toBe("Kaito Shigyo | POSL Lab");
-  });
-});
-
-describe("getPageTitle", () => {
-  test("prepends subject before Japanese owner name", () => {
-    expect(getPageTitle("Blog", "ja")).toBe("Blog | 執行 凱斗");
-  });
-
-  test("prepends subject before English owner name", () => {
-    expect(getPageTitle("Blog", "en")).toBe("Blog | Kaito Shigyo");
+describe("site titles", () => {
+  test("uses the brand while localizing the home topic", () => {
+    expect(getHomeTitle("ja")).toBe("furedea | ソフトウェア工学");
+    expect(getHomeTitle("en")).toBe("furedea | Software Engineering");
+    expect(getPageTitle("Blog")).toBe("Blog | furedea");
   });
 });
 

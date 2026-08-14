@@ -1,6 +1,6 @@
 ---
 import type { Lang } from "@i18n/ui";
-import { useTranslations, pickLocale } from "@i18n/utils";
+import { useTranslations } from "@i18n/utils";
 import { site } from "@data/site";
 
 interface Props {
@@ -14,7 +14,7 @@ const year = new Date().getFullYear();
 
 <footer class="site-footer">
   <div class="container">
-    <p>&copy; {year} {pickLocale(site.ownerName, lang)}. {t("footer.copyright")}</p>
+    <p>&copy; {year} {site.brandName}. {t("footer.copyright")}</p>
   </div>
 </footer>
 

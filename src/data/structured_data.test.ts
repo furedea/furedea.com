@@ -9,8 +9,8 @@ test("describes the canonical site name on the domain homepage", () => {
     "@type": "WebSite",
     "@id": "https://furedea.com/#website",
     url: "https://furedea.com/",
-    name: site.ownerName.en,
-    alternateName: [site.ownerName.ja, "furedea.com"],
+    name: site.brandName,
+    alternateName: ["furedea.com"],
   });
 });
 

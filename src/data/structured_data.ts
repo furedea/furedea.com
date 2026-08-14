@@ -25,8 +25,8 @@ export function createWebSiteJsonLd(pageUrl: string): JsonLd {
     "@type": "WebSite",
     "@id": new URL("/#website", url).href,
     url: url.href,
-    name: site.ownerName.en,
-    alternateName: [site.ownerName.ja, url.hostname],
+    name: site.brandName,
+    alternateName: [url.hostname],
   };
 }
 

@@ -10,7 +10,7 @@ export async function GET(context: APIContext): Promise<Response> {
   }
   const posts = await getLocalizedPosts("ja");
   return rss({
-    title: `${pickLocale(site.ownerName, "ja")} | Blog`,
+    title: `${site.brandName} | Blog`,
     description: pickLocale(site.blogDescription, "ja"),
     site: new URL("/ja/blog/", context.site),
     items: posts.map((post) => ({
