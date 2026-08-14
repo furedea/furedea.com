@@ -17,6 +17,7 @@ Run the complete local quality gate with:
 pnpm check
 pnpm exec playwright install chromium
 pnpm check:e2e
+pnpm check:performance
 ```
 
 The production build is written to `dist/`.
