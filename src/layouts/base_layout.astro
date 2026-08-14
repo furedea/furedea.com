@@ -18,6 +18,7 @@ interface Props {
   socialPreviewAlt?: string;
   ogType?: "website" | "article";
   structuredData?: JsonLd;
+  languagePath?: string;
 }
 
 const {
@@ -29,6 +30,7 @@ const {
   socialPreviewAlt,
   ogType,
   structuredData,
+  languagePath,
 } = Astro.props;
 const t = useTranslations(lang);
 ---
@@ -49,7 +51,7 @@ const t = useTranslations(lang);
   </head>
   <body>
     <a class="skip-link" href="#main">{t("common.skipToContent")}</a>
-    <Header lang={lang} />
+    <Header lang={lang} languagePath={languagePath} />
     <main id="main" tabindex="-1">
       <slot />
     </main>

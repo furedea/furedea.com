@@ -5,10 +5,11 @@ import { getLocalizedPath, stripLocaleAndBase } from "@i18n/utils";
 
 interface Props {
   lang: Lang;
+  path?: string;
 }
 
-const { lang } = Astro.props;
-const internalPath = stripLocaleAndBase(Astro.url.pathname);
+const { lang, path } = Astro.props;
+const internalPath = path ?? stripLocaleAndBase(Astro.url.pathname);
 ---
 
 <nav aria-label="Language">

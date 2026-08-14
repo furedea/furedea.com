@@ -7,9 +7,10 @@ import LanguageToggle from "./language_toggle.astro";
 
 interface Props {
   lang: Lang;
+  languagePath?: string;
 }
 
-const { lang } = Astro.props;
+const { lang, languagePath } = Astro.props;
 const t = useTranslations(lang);
 const base = getLocalePrefix(lang);
 const sections = getVisibleHomeSections();
@@ -40,7 +41,7 @@ const sections = getVisibleHomeSections();
           ))
         }
       </ul>
-      <LanguageToggle lang={lang} />
+      <LanguageToggle lang={lang} path={languagePath} />
     </nav>
   </div>
 </header>
