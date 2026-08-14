@@ -16,9 +16,9 @@ describe("performance report", () => {
 
     expect(summary).toBe(`## Performance budgets
 
-| Status | Page | FCP | LCP | CLS | Blocking | Transfer | Requests |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| ✅ | \`/ja/\` | 1.23 s | 1.45 s | 0.012 | 88 ms | 512 KB | 20 |
+| Status | Page | FCP | LCP | CLS | Blocking | Transfer | Requests | Samples |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| ✅ | \`/ja/\` | 1.23 s | 1.45 s | 0.012 | 88 ms | 512 KB | 20 | 1 |
 `);
   });
 
@@ -55,10 +55,34 @@ describe("performance report", () => {
       rmSync(directory, { recursive: true });
     }
   });
+
+  test("marks a recovered measurement as unstable", () => {
+    const entry = {
+      ...reportEntry(),
+      samples: Array.from({ length: 5 }, () => reportEntry().metrics),
+      wasExtended: true,
+    };
+
+    expect(renderPerformanceSummary([entry])).toContain("| ⚠️ unstable | `/ja/` |");
+  });
+
+  test("shows the sample count and timing range", () => {
+    const entry = reportEntry();
+    entry.samples = [
+      { ...entry.metrics, firstContentfulPaint: 1_000 },
+      entry.metrics,
+      { ...entry.metrics, firstContentfulPaint: 1_500 },
+    ];
+
+    const summary = renderPerformanceSummary([entry]);
+
+    expect(summary).toContain("1.23 s (1.00–1.50)");
+    expect(summary).toContain("| 3 |");
+  });
 });
 
 function reportEntry(): PerformanceReportEntry {
-  return {
+  const entry = {
     route: "/ja/",
     status: "passed",
     metrics: {
@@ -85,5 +109,7 @@ function reportEntry(): PerformanceReportEntry {
         font: { size: 700_000, count: 35 },
       },
     },
-  };
+  } satisfies Omit<PerformanceReportEntry, "samples" | "wasExtended">;
+
+  return { ...entry, samples: [entry.metrics], wasExtended: false };
 }
