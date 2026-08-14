@@ -3,6 +3,7 @@ import type { Lang } from "@i18n/ui";
 import { getLocalizedPath, getOgLocale, pickLocale, stripLocaleAndBase } from "@i18n/utils";
 import { site } from "@data/site";
 import type { SocialPreview } from "@data/site";
+import { serializeJsonLd, type JsonLd } from "@data/structured_data";
 import { BASE_PATH } from "../consts";
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
   socialPreview?: SocialPreview;
   socialPreviewAlt?: string;
   ogType?: "website" | "article";
+  structuredData?: JsonLd;
 }
 
 const {
@@ -23,6 +25,7 @@ const {
   socialPreview = site.socialPreview,
   socialPreviewAlt = `${pickLocale(site.ownerName, lang)} — ${pickLocale(site.labName, lang)}`,
   ogType = "website",
+  structuredData,
 } = Astro.props;
 const internalPath = stripLocaleAndBase(Astro.url.pathname);
 const origin = Astro.site?.origin ?? "";
@@ -85,3 +88,9 @@ const socialPreviewUrl = `${origin}${socialPreview.path}`;
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={socialPreviewUrl} />
 <meta name="twitter:image:alt" content={socialPreviewAlt} />
+
+{
+  structuredData !== undefined && (
+    <script is:inline type="application/ld+json" set:html={serializeJsonLd(structuredData)} />
+  )
+}

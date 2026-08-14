@@ -11,7 +11,8 @@ import BlogSection from "@components/blog_section.astro";
 import ContactSection from "@components/contact_section.astro";
 import { getVisibleHomeSections, type HomeSectionId } from "@data/sections";
 import { getHomeTitle, site } from "@data/site";
-import { pickLocale } from "@i18n/utils";
+import { createProfilePageJsonLd } from "@data/structured_data";
+import { getLocalizedPath, pickLocale } from "@i18n/utils";
 
 type SectionComponent = (typeof sectionComponents)[HomeSectionId];
 
@@ -32,12 +33,15 @@ export function getStaticPaths() {
 
 const lang = Astro.params.lang as Lang;
 const sections = getVisibleHomeSections();
+const pageUrl = new URL(getLocalizedPath("/", lang), Astro.site ?? Astro.url).href;
+const structuredData = createProfilePageJsonLd(lang, pageUrl);
 ---
 
 <BaseLayout
   title={getHomeTitle(lang)}
   description={pickLocale(site.homeDescription, lang)}
   lang={lang}
+  structuredData={structuredData}
 >
   <HeroSection lang={lang} />
   {
