@@ -17,6 +17,7 @@ node_modules/
 coverage/
 dist/
 playwright-report/
+performance-results/
 test-results/
 
 .claude/settings.local.json

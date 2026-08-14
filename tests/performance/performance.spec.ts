@@ -3,30 +3,20 @@ import { join, relative, sep } from "node:path";
 
 import { chromium, expect, test, type CDPSession, type Page } from "@playwright/test";
 
+import {
+  type PerformanceBudget as Budget,
+  type PerformanceMeasurement,
+  type PerformanceMetrics as Metrics,
+  type ResourceKind,
+} from "./performance_report";
+import { PERFORMANCE_RESULT_ATTACHMENT } from "./performance_reporter";
+
 const DIST_DIRECTORY = join(import.meta.dirname, "..", "..", "dist");
 const BASE_URL = "http://127.0.0.1:4321";
 const RUNS_PER_PAGE = 3;
 const NETWORK_LATENCY_MS = 150;
 const NETWORK_THROUGHPUT_BYTES_PER_SECOND = (1_600 * 1_024) / 8;
 const CPU_SLOWDOWN_RATE = 4;
-
-type ResourceKind = "font" | "image" | "script" | "total";
-
-type Metrics = {
-  blockingTime: number;
-  cumulativeLayoutShift: number;
-  firstContentfulPaint: number;
-  largestContentfulPaint: number;
-  resources: Record<ResourceKind, { count: number; size: number }>;
-};
-
-type Budget = {
-  blockingTime: number;
-  cumulativeLayoutShift: number;
-  firstContentfulPaint: number;
-  largestContentfulPaint: number;
-  resources: Record<ResourceKind, { count: number; size: number }>;
-};
 
 type ObservedMetrics = {
   blockingTime: number;
@@ -71,9 +61,16 @@ for (const route of routes) {
   test(`${route} remains within its performance budget`, async () => {
     const samples = await collectSamples(route);
     const metrics = medianMetrics(samples);
+    const budget = budgetFor(route);
+
+    const measurement = { budget, metrics, route } satisfies PerformanceMeasurement;
+    await test.info().attach(PERFORMANCE_RESULT_ATTACHMENT, {
+      body: Buffer.from(JSON.stringify(measurement)),
+      contentType: "application/json",
+    });
 
     printMetrics(route, metrics);
-    expectMetricsWithinBudget(metrics, budgetFor(route));
+    expectMetricsWithinBudget(metrics, budget);
   });
 }
 
