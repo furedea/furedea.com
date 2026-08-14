@@ -1,8 +1,11 @@
 ---
 import { getLocalizedPath } from "@i18n/utils";
+import { createWebSiteJsonLd, serializeJsonLd } from "@data/structured_data";
 import { BASE_PATH } from "../consts";
 
 const redirectPath = getLocalizedPath("/", "ja");
+const pageUrl = new URL("/", Astro.site ?? Astro.url).href;
+const structuredData = createWebSiteJsonLd(pageUrl);
 ---
 
 <!doctype html>
@@ -18,6 +21,7 @@ const redirectPath = getLocalizedPath("/", "ja");
       sizes="180x180"
       href={`${BASE_PATH}/apple_touch_icon.png`}
     />
+    <script is:inline type="application/ld+json" set:html={serializeJsonLd(structuredData)} />
     <title>Redirecting...</title>
   </head>
   <body>
