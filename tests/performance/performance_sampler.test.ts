@@ -33,16 +33,6 @@ describe("adaptive performance sampling", () => {
       wasExtended: true,
     });
   });
-
-  test("does not add samples for a resource-only budget failure", async () => {
-    const samples = [metrics(1_000), metrics(1_100), metrics(1_200)];
-    const resourceBudget = budget();
-    resourceBudget.resources.total.size = 1;
-
-    const measurement = await collectAdaptiveMetrics(sequence(samples), resourceBudget);
-
-    expect(measurement).toMatchObject({ samples, wasExtended: false });
-  });
 });
 
 function sequence(samples: PerformanceMetrics[]): () => Promise<PerformanceMetrics> {
@@ -56,12 +46,6 @@ function metrics(duration: number): PerformanceMetrics {
     cumulativeLayoutShift: 0.01,
     firstContentfulPaint: duration,
     largestContentfulPaint: duration,
-    resources: {
-      font: { count: 1, size: 1_024 },
-      image: { count: 1, size: 2_048 },
-      script: { count: 1, size: 3_072 },
-      total: { count: 3, size: 6_144 },
-    },
   };
 }
 

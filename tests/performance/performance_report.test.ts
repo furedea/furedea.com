@@ -16,9 +16,9 @@ describe("performance report", () => {
 
     expect(summary).toBe(`## Performance budgets
 
-| Status | Page | FCP | LCP | CLS | Blocking | Transfer | Requests | Samples |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| ✅ | \`/ja/\` | 1.23 s | 1.45 s | 0.012 | 88 ms | 512 KB | 20 | 1 |
+| Status | Page | FCP | LCP | CLS | Blocking | Samples |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| ✅ | \`/ja/\` | 1.23 s | 1.45 s | 0.012 | 88 ms | 1 |
 `);
   });
 
@@ -90,24 +90,12 @@ function reportEntry(): PerformanceReportEntry {
       largestContentfulPaint: 1_450,
       cumulativeLayoutShift: 0.0123,
       blockingTime: 88,
-      resources: {
-        total: { size: 512 * 1_024, count: 20 },
-        script: { size: 0, count: 0 },
-        image: { size: 20 * 1_024, count: 1 },
-        font: { size: 337 * 1_024, count: 16 },
-      },
     },
     budget: {
       firstContentfulPaint: 2_800,
       largestContentfulPaint: 2_800,
       cumulativeLayoutShift: 0.1,
       blockingTime: 300,
-      resources: {
-        total: { size: 850_000, count: 40 },
-        script: { size: 0, count: 0 },
-        image: { size: 40_000, count: 2 },
-        font: { size: 700_000, count: 35 },
-      },
     },
   } satisfies Omit<PerformanceReportEntry, "samples" | "wasExtended">;
 

@@ -1,4 +1,4 @@
-import type { PerformanceBudget, PerformanceMetrics, ResourceKind } from "./performance_report";
+import type { PerformanceBudget, PerformanceMetrics } from "./performance_report";
 
 const INITIAL_SAMPLE_COUNT = 3;
 const CONFIRMATION_SAMPLE_COUNT = 2;
@@ -40,15 +40,6 @@ function medianMetrics(samples: PerformanceMetrics[]): PerformanceMetrics {
     largestContentfulPaint: median(samples.map((sample) => sample.largestContentfulPaint)),
     cumulativeLayoutShift: median(samples.map((sample) => sample.cumulativeLayoutShift)),
     blockingTime: median(samples.map((sample) => sample.blockingTime)),
-    resources: Object.fromEntries(
-      (["total", "script", "image", "font"] satisfies ResourceKind[]).map((kind) => [
-        kind,
-        {
-          size: median(samples.map((sample) => sample.resources[kind].size)),
-          count: median(samples.map((sample) => sample.resources[kind].count)),
-        },
-      ]),
-    ) as PerformanceMetrics["resources"],
   };
 }
 

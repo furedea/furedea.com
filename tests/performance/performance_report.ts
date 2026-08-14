@@ -1,14 +1,11 @@
 import { appendFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-export type ResourceKind = "font" | "image" | "script" | "total";
-
 export type PerformanceMetrics = {
   blockingTime: number;
   cumulativeLayoutShift: number;
   firstContentfulPaint: number;
   largestContentfulPaint: number;
-  resources: Record<ResourceKind, { count: number; size: number }>;
 };
 
 export type PerformanceBudget = PerformanceMetrics;
@@ -29,8 +26,8 @@ export function renderPerformanceSummary(entries: PerformanceReportEntry[]): str
   return [
     "## Performance budgets",
     "",
-    "| Status | Page | FCP | LCP | CLS | Blocking | Transfer | Requests | Samples |",
-    "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+    "| Status | Page | FCP | LCP | CLS | Blocking | Samples |",
+    "| --- | --- | ---: | ---: | ---: | ---: | ---: |",
     ...rows,
     "",
   ].join("\n");
@@ -75,17 +72,6 @@ function renderRow(entry: PerformanceReportEntry): string {
       samples.map(({ blockingTime }) => blockingTime),
       "ms",
       Math.round,
-    ),
-    unitWithRange(
-      metrics.resources.total.size,
-      samples.map(({ resources }) => resources.total.size),
-      "KB",
-      (value) => Math.round(value / 1_024),
-    ),
-    valueWithRange(
-      metrics.resources.total.count,
-      samples.map(({ resources }) => resources.total.count),
-      String,
     ),
     `${samples.length} |`,
   ].join(" | ");

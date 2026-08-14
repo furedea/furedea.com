@@ -10,6 +10,10 @@ export default defineConfig({
     },
   },
   test: {
-    include: ["src/**/*.test.ts", "tests/performance/**/*.test.ts"],
+    include: [
+      "src/**/*.test.ts",
+      "tests/asset-budget/**/*.test.ts",
+      "tests/performance/**/*.test.ts",
+    ],
   },
 });

@@ -1,13 +1,12 @@
-import { readdirSync } from "node:fs";
-import { join, relative, sep } from "node:path";
+import { join } from "node:path";
 
-import { expect, test, type Browser, type CDPSession, type Page } from "@playwright/test";
+import { expect, test, type Browser, type Page } from "@playwright/test";
 
+import { discoverLocalizedRoutes } from "../site_routes";
 import {
   type PerformanceBudget as Budget,
   type PerformanceMeasurement,
   type PerformanceMetrics as Metrics,
-  type ResourceKind,
 } from "./performance_report";
 import { PERFORMANCE_RESULT_ATTACHMENT } from "./performance_reporter";
 import { collectAdaptiveMetrics } from "./performance_sampler";
@@ -24,22 +23,11 @@ type ObservedMetrics = {
   largestContentfulPaint: number;
 };
 
-type NetworkResource = {
-  size: number;
-  type: string;
-};
-
 const PAGE_BUDGET: Budget = {
   firstContentfulPaint: 2_800,
   largestContentfulPaint: 2_800,
   cumulativeLayoutShift: 0.1,
   blockingTime: 300,
-  resources: {
-    total: { size: 850_000, count: 40 },
-    script: { size: 0, count: 0 },
-    image: { size: 40_000, count: 2 },
-    font: { size: 700_000, count: 35 },
-  },
 };
 
 const ARTICLE_BUDGET: Budget = {
@@ -47,15 +35,9 @@ const ARTICLE_BUDGET: Budget = {
   largestContentfulPaint: 4_500,
   cumulativeLayoutShift: 0.1,
   blockingTime: 1_500,
-  resources: {
-    total: { size: 1_900_000, count: 90 },
-    script: { size: 260_000, count: 40 },
-    image: { size: 650_000, count: 3 },
-    font: { size: 850_000, count: 45 },
-  },
 };
 
-const routes = discoverRoutes(DIST_DIRECTORY);
+const routes = discoverLocalizedRoutes(DIST_DIRECTORY);
 
 for (const route of routes) {
   test(`${route} remains within its performance budget`, async ({ browser }) => {
@@ -90,7 +72,6 @@ async function measurePage(browser: Browser, route: string): Promise<Metrics> {
   try {
     const page = await context.newPage();
     const session = await context.newCDPSession(page);
-    const resources = observeNetworkResources(session);
 
     await session.send("Network.enable");
     await session.send("Network.emulateNetworkConditions", {
@@ -104,23 +85,10 @@ async function measurePage(browser: Browser, route: string): Promise<Metrics> {
     await page.goto(new URL(route, BASE_URL).href, { waitUntil: "networkidle" });
     await page.waitForTimeout(1_000);
 
-    return await readMetrics(page, resources);
+    return await readMetrics(page);
   } finally {
     await context.close();
   }
-}
-
-function observeNetworkResources(session: CDPSession): Map<string, NetworkResource> {
-  const resources = new Map<string, NetworkResource>();
-  session.on("Network.requestWillBeSent", ({ requestId, type }) => {
-    resources.set(requestId, { size: 0, type: type ?? "Other" });
-  });
-  session.on("Network.loadingFinished", ({ requestId, encodedDataLength }) => {
-    const resource = resources.get(requestId);
-    if (resource) resource.size = encodedDataLength;
-  });
-  session.on("Network.loadingFailed", ({ requestId }) => resources.delete(requestId));
-  return resources;
 }
 
 async function installPerformanceObservers(page: Page): Promise<void> {
@@ -156,7 +124,7 @@ async function installPerformanceObservers(page: Page): Promise<void> {
   });
 }
 
-async function readMetrics(page: Page, resources: Map<string, NetworkResource>): Promise<Metrics> {
+async function readMetrics(page: Page): Promise<Metrics> {
   const snapshot = await page.evaluate(() => {
     const observed = (window as typeof window & { __performanceBudgetMetrics: ObservedMetrics })
       .__performanceBudgetMetrics;
@@ -173,42 +141,7 @@ async function readMetrics(page: Page, resources: Map<string, NetworkResource>):
     largestContentfulPaint: snapshot.observed.largestContentfulPaint,
     cumulativeLayoutShift: snapshot.observed.cumulativeLayoutShift,
     blockingTime: snapshot.observed.blockingTime,
-    resources: summarizeResources(resources.values()),
   };
-}
-
-function summarizeResources(entries: Iterable<NetworkResource>): Metrics["resources"] {
-  const summary = emptyResourceSummary();
-
-  for (const entry of entries) {
-    addResource(summary.total, entry.size);
-    const kind = resourceKind(entry.type);
-    if (kind) addResource(summary[kind], entry.size);
-  }
-
-  return summary;
-}
-
-function emptyResourceSummary(): Metrics["resources"] {
-  return {
-    total: { size: 0, count: 0 },
-    script: { size: 0, count: 0 },
-    image: { size: 0, count: 0 },
-    font: { size: 0, count: 0 },
-  };
-}
-
-function addResource(summary: { count: number; size: number }, size: number): void {
-  summary.count += 1;
-  summary.size += size;
-}
-
-function resourceKind(resourceType: string | undefined): Exclude<ResourceKind, "total"> | null {
-  const kind = resourceType?.toLowerCase();
-  if (kind === "font" || kind === "image" || kind === "script") {
-    return kind;
-  }
-  return null;
 }
 
 function expectMetricsWithinBudget(metrics: Metrics, budget: Budget): void {
@@ -224,35 +157,10 @@ function expectMetricsWithinBudget(metrics: Metrics, budget: Budget): void {
     budget.cumulativeLayoutShift,
   );
   expect(metrics.blockingTime, "blocking time (ms)").toBeLessThanOrEqual(budget.blockingTime);
-
-  for (const kind of ["total", "script", "image", "font"] as const) {
-    expect(metrics.resources[kind].size, `${kind} transfer size (bytes)`).toBeLessThanOrEqual(
-      budget.resources[kind].size,
-    );
-    expect(metrics.resources[kind].count, `${kind} request count`).toBeLessThanOrEqual(
-      budget.resources[kind].count,
-    );
-  }
 }
 
 function budgetFor(route: string): Budget {
   return /^\/(?:ja|en)\/blog\/.+\/$/.test(route) ? ARTICLE_BUDGET : PAGE_BUDGET;
-}
-
-function discoverRoutes(directory: string): string[] {
-  return listHtmlFiles(directory)
-    .map((file) => relative(directory, file).split(sep).join("/"))
-    .filter((file) => /^(?:ja|en)\/.+\.html$/.test(file))
-    .map((file) => `/${file.replace(/index\.html$/, "")}`)
-    .toSorted();
-}
-
-function listHtmlFiles(directory: string): string[] {
-  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
-    const path = join(directory, entry.name);
-    if (entry.isDirectory()) return listHtmlFiles(path);
-    return entry.isFile() && entry.name.endsWith(".html") ? [path] : [];
-  });
 }
 
 function printMetrics(route: string, metrics: Metrics, sampleCount: number): void {
@@ -263,10 +171,5 @@ function printMetrics(route: string, metrics: Metrics, sampleCount: number): voi
     lcpMs: Math.round(metrics.largestContentfulPaint),
     cls: metrics.cumulativeLayoutShift.toFixed(3),
     blockingMs: Math.round(metrics.blockingTime),
-    transferKb: Math.round(metrics.resources.total.size / 1_024),
-    requests: metrics.resources.total.count,
-    scriptKb: Math.round(metrics.resources.script.size / 1_024),
-    imageKb: Math.round(metrics.resources.image.size / 1_024),
-    fontKb: Math.round(metrics.resources.font.size / 1_024),
   });
 }
