@@ -1,7 +1,7 @@
 ---
 import type { Lang } from "@i18n/ui";
 import { useTranslations } from "@i18n/utils";
-import { site } from "@data/site";
+import { profile } from "@data/profile";
 
 interface Props {
   lang: Lang;
@@ -14,7 +14,7 @@ const year = new Date().getFullYear();
 
 <footer class="site-footer">
   <div class="container">
-    <p>&copy; {year} {site.brandName}. {t("footer.copyright")}</p>
+    <p>&copy; {year} {profile.name.en}. {t("footer.copyright")}</p>
   </div>
 </footer>
 

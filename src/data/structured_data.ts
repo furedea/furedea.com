@@ -3,7 +3,6 @@ import { getLocalizedPath, pickLocale } from "@i18n/utils";
 
 import type { WebsiteArticleMetadata } from "./article";
 import { profile } from "./profile";
-import { site } from "./site";
 
 export type JsonLd = Record<string, unknown>;
 
@@ -25,8 +24,8 @@ export function createWebSiteJsonLd(pageUrl: string): JsonLd {
     "@type": "WebSite",
     "@id": new URL("/#website", url).href,
     url: url.href,
-    name: site.brandName,
-    alternateName: [url.hostname],
+    name: profile.name.en,
+    alternateName: [profile.name.ja, url.hostname],
   };
 }
 

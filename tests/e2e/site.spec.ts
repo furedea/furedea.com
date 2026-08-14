@@ -10,9 +10,10 @@ test.describe("localized top pages", () => {
   test("renders Japanese top page with profile links", async ({ page }) => {
     await page.goto("/ja/");
 
-    await expect(page).toHaveTitle("furedea | ソフトウェア工学");
-    await expect(page.locator(".site-logo")).toHaveText("furedea");
-    await expect(page.locator(".site-footer")).toContainText(/© \d{4} furedea/);
+    await expect(page).toHaveTitle("Kaito Shigyo");
+    const homeLink = page.getByRole("link", { name: "ホーム" });
+    await expect(homeLink.locator("img")).toHaveAttribute("src", "/favicon.svg");
+    await expect(page.locator(".site-footer")).toContainText(/© \d{4} Kaito Shigyo/);
     await expect(page.getByRole("heading", { name: "執行 凱斗", level: 1 })).toBeVisible();
     await expect(page.getByText("ソフトウェア工学")).toBeVisible();
     await expect(page.getByText("POSL研究室, 九州大学")).toBeVisible();
@@ -32,7 +33,7 @@ test.describe("localized top pages", () => {
 
     await page.goto("/en/");
 
-    await expect(page).toHaveTitle("furedea | Software Engineering");
+    await expect(page).toHaveTitle("Kaito Shigyo");
     await expect(page.getByRole("heading", { name: "Kaito Shigyo", level: 1 })).toBeVisible();
     await expect(page.getByText("Software Engineering").first()).toBeVisible();
     await expect(page.getByText("POSL Lab, Kyushu University")).toBeVisible();
@@ -89,10 +90,13 @@ test("root redirects to Japanese top page", async ({ page }) => {
 test("publishes social preview metadata on the Japanese top page", async ({ page }) => {
   await page.goto("/ja/");
 
-  await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute("content", "furedea");
+  await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute(
+    "content",
+    profile.name.en,
+  );
   await expect(page.locator('link[type="application/rss+xml"]')).toHaveAttribute(
     "title",
-    "furedea RSS",
+    "Kaito Shigyo RSS",
   );
   await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
     "content",
@@ -109,6 +113,7 @@ test("publishes social preview metadata on the Japanese top page", async ({ page
 test("publishes generated social preview metadata on an article page", async ({ page }) => {
   await page.goto("/ja/blog/modern-terminal-environment/");
 
+  await expect(page).toHaveTitle("ぼくのかんがえたさいきょうのターミナル環境 2026 — Kaito Shigyo");
   await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "article");
   await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
     "content",
@@ -116,11 +121,11 @@ test("publishes generated social preview metadata on an article page", async ({ 
   );
 });
 
-test("uses the brand in the RSS channel title", async ({ request }) => {
+test("uses the profile name in the RSS channel title", async ({ request }) => {
   const response = await request.get("/rss.xml");
 
   expect(response.ok()).toBe(true);
-  expect(await response.text()).toContain("<title>furedea | Blog</title>");
+  expect(await response.text()).toContain("<title>Kaito Shigyo — Blog</title>");
 });
 
 test("loads critical article resources only from the site origin", async ({ page }) => {

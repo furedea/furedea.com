@@ -7,10 +7,9 @@ import { research } from "./research";
 import { getHomeTitle, getPageTitle, site } from "./site";
 
 describe("site titles", () => {
-  test("uses the brand while localizing the home topic", () => {
-    expect(getHomeTitle("ja")).toBe("furedea | ソフトウェア工学");
-    expect(getHomeTitle("en")).toBe("furedea | Software Engineering");
-    expect(getPageTitle("Blog")).toBe("Blog | furedea");
+  test("uses the English profile name without a home-page qualifier", () => {
+    expect(getHomeTitle()).toBe("Kaito Shigyo");
+    expect(getPageTitle("Blog")).toBe("Blog — Kaito Shigyo");
   });
 });
 

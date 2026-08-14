@@ -62,12 +62,12 @@ const socialPreviewUrl = `${origin}${socialPreview.path}`;
 <link
   rel="alternate"
   type="application/rss+xml"
-  title={`${site.brandName} RSS`}
+  title={`${profile.name.en} RSS`}
   href={`${BASE_PATH}/rss.xml`}
 />
 
 <meta property="og:type" content={ogType} />
-<meta property="og:site_name" content={site.brandName} />
+<meta property="og:site_name" content={profile.name.en} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonicalUrl} />
