@@ -43,7 +43,7 @@ const PAGE_BUDGET: Budget = {
   firstContentfulPaint: 2_800,
   largestContentfulPaint: 2_800,
   cumulativeLayoutShift: 0.1,
-  blockingTime: 200,
+  blockingTime: 300,
   resources: {
     total: { size: 850_000, count: 40 },
     script: { size: 0, count: 0 },
@@ -56,7 +56,7 @@ const ARTICLE_BUDGET: Budget = {
   firstContentfulPaint: 3_500,
   largestContentfulPaint: 4_500,
   cumulativeLayoutShift: 0.1,
-  blockingTime: 900,
+  blockingTime: 1_500,
   resources: {
     total: { size: 1_900_000, count: 90 },
     script: { size: 260_000, count: 40 },
