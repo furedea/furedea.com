@@ -29,11 +29,5 @@ function metrics(duration: number): PerformanceReportEntry["metrics"] {
     cumulativeLayoutShift: 0.01,
     firstContentfulPaint: duration,
     largestContentfulPaint: duration,
-    resources: {
-      font: { count: 1, size: 1_024 },
-      image: { count: 1, size: 2_048 },
-      script: { count: 1, size: 3_072 },
-      total: { count: 3, size: 6_144 },
-    },
   };
 }

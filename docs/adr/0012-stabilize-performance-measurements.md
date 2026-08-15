@@ -1,6 +1,6 @@
 # ADR-0012: Stabilize performance measurements
 
-- Status: Accepted
+- Status: Superseded by ADR-0013
 - Date: 2026-08-15
 - Supersedes: ADR-0011
 
