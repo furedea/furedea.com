@@ -11,7 +11,7 @@ export async function renderArticleSocialPreview(cover: ArticleCover): Promise<B
   return sharp(Buffer.from(svg)).png().toBuffer();
 }
 
-function createArticleSocialPreviewSvg(cover: ArticleCover): string {
+export function createArticleSocialPreviewSvg(cover: ArticleCover): string {
   const { width, height } = ARTICLE_SOCIAL_PREVIEW_SIZE;
   const titleLines = wrapTitle(cover.title)
     .map((line, index) => `<tspan x="72" y="${142 + index * 78}">${escapeXml(line)}</tspan>`)
