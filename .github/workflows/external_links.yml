@@ -1,0 +1,64 @@
+name: External Links
+
+on:
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  external-links:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Check external links
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: >-
+            --base-url https://furedea.com
+            --scheme http
+            --scheme https
+            --exclude '^https://furedea\.com(?:/|$)'
+            --accept '200..=299,403'
+            --max-retries 3
+            --retry-wait-time 2
+            --timeout 30
+            --max-concurrency 8
+            --no-progress
+            './articles/**/*.md'
+            './content/**/*.yaml'
+            './src/data/profile.ts'
+            './src/data/research.ts'
+            './src/data/education.ts'
+          fail: true
+          failIfEmpty: true
+          format: markdown
+          jobSummary: true
+          lycheeVersion: v0.24.2
+          output: lychee/results.md
+          token: ${{ github.token }}
+
+      - name: Upload external link results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: external-link-results
+          path: lychee/results.md
+          if-no-files-found: warn
+          retention-days: 14
