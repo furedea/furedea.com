@@ -1,26 +1,19 @@
+import { join } from "node:path";
+
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
+import { discoverLocalizedRoutes } from "../site_routes";
+
 const WCAG_AA_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
+const DIST_DIRECTORY = join(import.meta.dirname, "..", "..", "dist");
 
-test("Japanese homepage has no automatically detectable WCAG A or AA violations", async ({
-  page,
-}) => {
-  await page.goto("/ja/");
-  await expectNoWcagViolations(page);
-});
-
-test("English homepage has no automatically detectable WCAG A or AA violations", async ({
-  page,
-}) => {
-  await page.goto("/en/");
-  await expectNoWcagViolations(page);
-});
-
-test("Article page has no automatically detectable WCAG A or AA violations", async ({ page }) => {
-  await page.goto("/ja/blog/modern-terminal-environment/");
-  await expectNoWcagViolations(page);
-});
+for (const route of discoverLocalizedRoutes(DIST_DIRECTORY)) {
+  test(`${route} has no automatically detectable WCAG A or AA violations`, async ({ page }) => {
+    await page.goto(route);
+    await expectNoWcagViolations(page);
+  });
+}
 
 test("Open mobile navigation has no automatically detectable WCAG A or AA violations", async ({
   page,
