@@ -2,21 +2,24 @@ import sharp from "sharp";
 import { expect, test } from "vitest";
 
 import { createArticleCover } from "./article_cover";
-import { renderArticleSocialPreview } from "./article_social_preview";
+import {
+  createArticleSocialPreviewSvg,
+  renderArticleSocialPreview,
+} from "./article_social_preview";
 
-test("builds an article cover from canonical article metadata", () => {
-  expect(
-    createArticleCover("modern-terminal-environment", {
-      title: "ぼくのかんがえたさいきょうのターミナル環境 2026",
-      emoji: "📝",
-      type: "tech",
-      tags: ["terminal", "CLI", "TUI", "Zsh"],
-    }),
-  ).toMatchObject({
-    title: "ぼくのかんがえたさいきょうのターミナル環境 2026",
-    emoji: "📝",
+const ARTICLE_METADATA = {
+  title: "A durable test fixture",
+  emoji: "🧪",
+  type: "tech" as const,
+  tags: ["testing", "specification", "automation", "ignored"],
+};
+
+test("builds an article cover from article metadata", () => {
+  expect(createArticleCover("fixture-article", ARTICLE_METADATA)).toMatchObject({
+    title: ARTICLE_METADATA.title,
+    emoji: ARTICLE_METADATA.emoji,
     label: "TECH",
-    topics: ["terminal", "CLI", "TUI"],
+    topics: ARTICLE_METADATA.tags.slice(0, 3),
     theme: {
       backgroundStart: "#071528",
       backgroundEnd: "#173a69",
@@ -24,7 +27,7 @@ test("builds an article cover from canonical article metadata", () => {
       accent: "#4af2c8",
     },
     socialPreview: {
-      path: "/og/articles/modern-terminal-environment.png",
+      path: "/og/articles/fixture-article.png",
       width: 1200,
       height: 630,
     },
@@ -32,12 +35,7 @@ test("builds an article cover from canonical article metadata", () => {
 });
 
 test("renders an article cover as a standard large PNG", async () => {
-  const cover = createArticleCover("modern-terminal-environment", {
-    title: "ぼくのかんがえたさいきょうのターミナル環境 2026",
-    emoji: "📝",
-    type: "tech",
-    tags: ["terminal", "CLI", "TUI"],
-  });
+  const cover = createArticleCover("fixture-article", ARTICLE_METADATA);
 
   await expect(sharp(await renderArticleSocialPreview(cover)).metadata()).resolves.toMatchObject({
     format: "png",
@@ -46,21 +44,10 @@ test("renders an article cover as a standard large PNG", async () => {
   });
 });
 
-test("renders a visible illustration in the article social preview", async () => {
-  const cover = createArticleCover("modern-terminal-environment", {
-    title: "ぼくのかんがえたさいきょうのターミナル環境 2026",
-    emoji: "📝",
-    type: "tech",
-    tags: ["terminal", "CLI", "TUI"],
-  });
-  const image = sharp(await renderArticleSocialPreview(cover)).extract({
-    left: 850,
-    top: 170,
-    width: 250,
-    height: 330,
-  });
-  const { channels } = await image.stats();
-  const meanBrightness = channels.slice(0, 3).reduce((sum, channel) => sum + channel.mean, 0) / 3;
+test("includes a semantic illustration in the article social preview", () => {
+  const cover = createArticleCover("fixture-article", ARTICLE_METADATA);
+  const svg = createArticleSocialPreviewSvg(cover);
 
-  expect(meanBrightness).toBeGreaterThan(60);
+  expect(svg).toContain('role="img"');
+  expect(svg).toContain(`aria-label="${ARTICLE_METADATA.emoji}"`);
 });

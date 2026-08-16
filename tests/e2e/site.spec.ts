@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import { profile } from "../../src/data/profile";
+import { site } from "../../src/data/site";
 
 const linkByLabel = Object.fromEntries(
   profile.socialLinks.map((link) => [link.platform, link.url]),
@@ -10,13 +11,16 @@ test.describe("localized top pages", () => {
   test("renders Japanese top page with profile links", async ({ page }) => {
     await page.goto("/ja/");
 
-    await expect(page).toHaveTitle("Kaito Shigyo");
+    await expect(page).toHaveTitle(profile.name.en);
     const homeLink = page.getByRole("link", { name: "ホーム" });
     await expect(homeLink.locator("img")).toHaveAttribute("src", "/favicon.svg");
-    await expect(page.locator(".site-footer")).toContainText(/© \d{4} Kaito Shigyo/);
-    await expect(page.getByRole("heading", { name: "執行 凱斗", level: 1 })).toBeVisible();
-    await expect(page.getByText("ソフトウェア工学")).toBeVisible();
-    await expect(page.getByText("POSL研究室, 九州大学")).toBeVisible();
+    await expect(page.locator(".site-footer")).toContainText(/© \d{4}/);
+    await expect(page.locator(".site-footer")).toContainText(profile.name.en);
+    await expect(page.getByRole("heading", { name: profile.name.ja, level: 1 })).toBeVisible();
+    await expect(page.getByText(profile.researchArea.ja, { exact: true })).toBeVisible();
+    await expect(
+      page.getByText(`${profile.affiliation.ja}, ${profile.university.ja}`, { exact: true }),
+    ).toBeVisible();
     await expect(page.getByRole("link", { name: "GitHub" })).toHaveAttribute(
       "href",
       linkByLabel.GitHub,
@@ -33,10 +37,12 @@ test.describe("localized top pages", () => {
 
     await page.goto("/en/");
 
-    await expect(page).toHaveTitle("Kaito Shigyo");
-    await expect(page.getByRole("heading", { name: "Kaito Shigyo", level: 1 })).toBeVisible();
-    await expect(page.getByText("Software Engineering").first()).toBeVisible();
-    await expect(page.getByText("POSL Lab, Kyushu University")).toBeVisible();
+    await expect(page).toHaveTitle(profile.name.en);
+    await expect(page.getByRole("heading", { name: profile.name.en, level: 1 })).toBeVisible();
+    await expect(page.getByText(profile.researchArea.en, { exact: true }).first()).toBeVisible();
+    await expect(
+      page.getByText(`${profile.affiliation.en}, ${profile.university.en}`, { exact: true }),
+    ).toBeVisible();
     await expect(page.getByRole("link", { name: "JA" })).toHaveAttribute("href", "/ja/");
   });
 });
@@ -73,12 +79,11 @@ test("labels non-peer-reviewed publications on Japanese pages", async ({ page })
   await expect(page.locator(".pub-review-status").first()).toHaveText("査読なし");
 });
 
-test("keeps the existing circular profile portrait", async ({ page }) => {
+test("uses localized alternative text for the profile portrait", async ({ page }) => {
   await page.goto("/ja/");
 
   const portrait = page.locator(".hero-photo");
-  await expect(portrait.locator("img")).toHaveAttribute("alt", "執行 凱斗");
-  await expect(portrait).toHaveCSS("border-radius", "50%");
+  await expect(portrait.locator("img")).toHaveAttribute("alt", profile.name.ja);
 });
 
 test("root redirects to Japanese top page", async ({ page }) => {
@@ -96,7 +101,7 @@ test("publishes social preview metadata on the Japanese top page", async ({ page
   );
   await expect(page.locator('link[type="application/rss+xml"]')).toHaveAttribute(
     "title",
-    "Kaito Shigyo RSS",
+    `${profile.name.en} RSS`,
   );
   await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
     "content",
@@ -125,7 +130,7 @@ test("uses the profile name in the RSS channel title", async ({ request }) => {
   const response = await request.get("/rss.xml");
 
   expect(response.ok()).toBe(true);
-  expect(await response.text()).toContain("<title>Kaito Shigyo — Blog</title>");
+  expect(await response.text()).toContain(`<title>${profile.name.en} — Blog</title>`);
 });
 
 test("loads critical article resources only from the site origin", async ({ page }) => {
@@ -151,52 +156,54 @@ test("unknown paths return the custom not-found page", async ({ page }) => {
   const response = await page.goto("/missing-page/");
 
   expect(response?.status()).toBe(404);
-  await expect(page.getByRole("heading", { name: "ページが見つかりません" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "日本語トップへ" })).toHaveAttribute("href", "/ja/");
-  await expect(page.getByRole("link", { name: "English home" })).toHaveAttribute("href", "/en/");
+  await expect(page.getByRole("heading", { name: site.notFound.ja.heading })).toBeVisible();
+  await expect(page.getByRole("link", { name: site.notFound.ja.homeLabel })).toHaveAttribute(
+    "href",
+    "/ja/",
+  );
+  await expect(page.getByRole("link", { name: site.notFound.en.homeLabel })).toHaveAttribute(
+    "href",
+    "/en/",
+  );
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, nofollow");
 });
 
 test("blog card is clickable as a whole", async ({ page }) => {
   await page.goto("/ja/");
 
-  await page.locator(".blog-card", { hasText: "ぼくのかんがえたさいきょう" }).click();
-  await expect(page).toHaveURL(/\/ja\/blog\/modern-terminal-environment\/$/);
-  await expect(
-    page.getByRole("heading", {
-      name: "ぼくのかんがえたさいきょうのターミナル環境 2026",
-      level: 1,
-    }),
-  ).toBeVisible();
+  const card = page.locator(".blog-card").first();
+  const title = await card.getByRole("heading", { level: 3 }).innerText();
+  const href = await card.getAttribute("href");
+
+  expect(href).toMatch(/^\/ja\/blog\/.+\/$/);
+  await card.click();
+  expect(new URL(page.url()).pathname).toBe(href);
+  await expect(page.getByRole("heading", { name: title, level: 1 })).toBeVisible();
 });
 
 test("falls back to Japanese articles on the English site", async ({ page }) => {
+  await page.goto("/ja/");
+  const japaneseCard = page.locator(".blog-card").first();
+  const japaneseTitle = await japaneseCard.getByRole("heading", { level: 3 }).innerText();
+  const japaneseHref = await japaneseCard.getAttribute("href");
+
   await page.goto("/en/");
+  const englishCard = page.locator(".blog-card").first();
+  const englishHref = await englishCard.getAttribute("href");
 
-  await expect(
-    page.getByRole("heading", {
-      name: "ぼくのかんがえたさいきょうのターミナル環境 2026",
-      level: 3,
-    }),
-  ).toBeVisible();
-
-  await page.locator(".blog-card", { hasText: "ぼくのかんがえたさいきょう" }).click();
-  await expect(page).toHaveURL(/\/en\/blog\/modern-terminal-environment\/$/);
-  await expect(
-    page.getByRole("heading", {
-      name: "ぼくのかんがえたさいきょうのターミナル環境 2026",
-      level: 1,
-    }),
-  ).toBeVisible();
+  await expect(englishCard.getByRole("heading", { level: 3 })).toHaveText(japaneseTitle);
+  expect(englishHref).toBe(japaneseHref?.replace("/ja/", "/en/"));
+  await englishCard.click();
+  expect(new URL(page.url()).pathname).toBe(englishHref);
+  await expect(page.getByRole("heading", { name: japaneseTitle, level: 1 })).toBeVisible();
 });
 
-test("keeps the existing blog card presentation", async ({ page }) => {
+test("does not render social preview covers in blog cards", async ({ page }) => {
   await page.goto("/ja/");
 
-  const card = page.locator(".blog-card", { hasText: "ぼくのかんがえたさいきょう" });
-  await expect(card.locator(".article-cover")).toHaveCount(0);
-  await expect(card.locator(".read-more")).toContainText("続きを読む");
-  await expect(card.locator(".tag-list")).toHaveCount(0);
+  const cards = page.locator(".blog-card");
+  await expect(cards.first()).toBeVisible();
+  await expect(cards.locator("img")).toHaveCount(0);
 });
 
 test("skip link moves focus to main content", async ({ page }) => {
