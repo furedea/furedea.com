@@ -1,5 +1,7 @@
 ls:
   .dir: regex:\.?[a-z0-9]+(-[a-z0-9]+)*
+  .md: regex:[a-z0-9]*([._][a-z0-9]+)* | regex:(README|CONTRIBUTING|CHANGELOG|AGENTS|CLAUDE|SKILL|CONTENT_LICENSE)
+  .yaml: regex:[a-z0-9]*([._][a-z0-9]+)* | regex:pnpm-(lock|workspace)
   .*: regex:[a-z0-9]*([._][a-z0-9]+)*
 
 ignore:
@@ -7,29 +9,15 @@ ignore:
   - .direnv
   - result
   - result-*
+  - "{.venv,.uv-cache,.ruff_cache,.pytest_cache,.ipynb_checkpoints,__pycache__,node_modules,target}"
+  - "**/{.venv,.uv-cache,.ruff_cache,.pytest_cache,.ipynb_checkpoints,__pycache__,node_modules,target}"
   - docs/logs
-
-  - README.md
-  - CLAUDE.md
-  - CONTENT_LICENSE.md
+  - "**/docs/logs"
   - articles
   - docs/adr
 
-  - pnpm-lock.yaml
-  - pnpm-workspace.yaml
-  - node_modules
-  - .pnpm-store
-  - .astro
-  - dist
-  - build
-  - coverage
-  - playwright-report
-  - test-results
-  - .next
-  - out
-  - .nuxt
-  - .output
-  - .svelte-kit
-  - .turbo
-  - .vite
+  - "{.pnpm-store,.astro,.turbo,.vite}"
+  - "**/{.pnpm-store,.astro,.turbo,.vite}"
+  - "{dist,build,coverage,playwright-report,test-results,.next,out,.nuxt,.output,.svelte-kit}"
+  - "**/{dist,build,coverage,playwright-report,test-results,.next,out,.nuxt,.output,.svelte-kit}"
   - src/pages
