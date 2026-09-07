@@ -61,7 +61,7 @@
       "postcss": "8.5.26",
       "sharp": "0.35.3",
       "svgo": "4.0.2",
-      "vite": "8.2.1",
+      "vite": "8.2.2",
       "yaml": "2.8.3"
     },
     "onlyBuiltDependencies": [
