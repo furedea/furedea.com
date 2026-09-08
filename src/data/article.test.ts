@@ -222,6 +222,49 @@ Body.
   expect(parseZennArticleSource(source).metadata.title).toBe("A # character stays in the title");
 });
 
+test("reads YAML quotes and block topic lists without changing publication metadata", () => {
+  const source = `---
+# Metadata shared by Zenn, the website, and esa.
+title: 'A # character and ''quoted'' words'
+emoji: '📝'
+type: 'tech'
+topics:
+  - astro
+  - 'zenn'
+published: false
+published_at: '2026-08-04'
+---
+Article body.
+`;
+
+  expect(parseZennArticleSource(source)).toEqual({
+    metadata: {
+      title: "A # character and 'quoted' words",
+      emoji: "📝",
+      type: "tech",
+      topics: ["astro", "zenn"],
+      published: false,
+      published_at: new Date("2026-08-04T00:00:00.000Z"),
+    },
+    markdown: "Article body.\n",
+  });
+});
+
+test.each(["null", "false", "123", ""])("rejects a non-date publication value: %s", (value) => {
+  const source = `---
+title: "Article"
+emoji: "📝"
+type: "tech"
+topics: []
+published: false
+published_at: ${value}
+---
+Body.
+`;
+
+  expect(() => parseZennArticleSource(source)).toThrow();
+});
+
 test("maps a published Zenn article to a shipped esa post", () => {
   expect(
     toEsaPostPayload(
