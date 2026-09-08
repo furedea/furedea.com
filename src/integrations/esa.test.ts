@@ -99,6 +99,36 @@ test("updates a shipped esa copy without sending notices", async () => {
   );
 });
 
+test("finds the existing esa copy on later search pages before publishing", async () => {
+  const canonicalUrl = "https://furedea.com/ja/blog/article-publishing/";
+  const payload: EsaPostPayload = {
+    post: { ...PAYLOAD.post, body_md: `Originally published at ${canonicalUrl}` },
+  };
+  const fetcher: typeof fetch = async (input, options) => {
+    const request = new Request(input, options);
+    const url = new URL(request.url);
+    if (request.method !== "GET") {
+      throw new Error("An identical existing article must not be published again.");
+    }
+    return url.searchParams.get("page") === "2"
+      ? Response.json({
+          posts: [{ ...payload.post, number: 42, url: "https://example-team.esa.io/posts/42" }],
+          next_page: null,
+        })
+      : Response.json({ posts: [], next_page: 2 });
+  };
+
+  await expect(
+    upsertEsaPost({
+      team: "example-team",
+      accessToken: ACCESS_TOKEN,
+      canonicalUrl,
+      payload,
+      fetcher,
+    }),
+  ).resolves.toEqual({ number: 42, url: "https://example-team.esa.io/posts/42" });
+});
+
 test("ships a WIP esa copy with notices enabled", async () => {
   const canonicalUrl = "https://furedea.com/ja/blog/article-publishing/";
   const payload: EsaPostPayload = {
@@ -128,6 +158,84 @@ test("ships a WIP esa copy with notices enabled", async () => {
   });
 
   expect(requests[1]?.options?.body).toBe(JSON.stringify(payload));
+});
+
+test("refuses to publish when separate search pages contain duplicate copies", async () => {
+  const canonicalUrl = "https://furedea.com/ja/blog/article-publishing/";
+  const methods: string[] = [];
+  const fetcher: typeof fetch = async (input, options) => {
+    const request = new Request(input, options);
+    methods.push(request.method);
+    const url = new URL(request.url);
+    const page = Number(url.searchParams.get("page") ?? "1");
+    return Response.json({
+      posts: [
+        {
+          ...PAYLOAD.post,
+          number: page,
+          url: `https://example-team.esa.io/posts/${page}`,
+          body_md: `Originally published at ${canonicalUrl}`,
+        },
+      ],
+      next_page: page === 1 ? 2 : null,
+    });
+  };
+
+  await expect(
+    upsertEsaPost({
+      team: "example-team",
+      accessToken: ACCESS_TOKEN,
+      canonicalUrl,
+      payload: PAYLOAD,
+      fetcher,
+    }),
+  ).rejects.toThrow();
+  expect(methods.filter((method) => method !== "GET")).toEqual([]);
+});
+
+test.each([0, -1, 1, 1.5, "2"])(
+  "refuses to publish when search pagination is invalid: %s",
+  async (nextPage) => {
+    const methods: string[] = [];
+    const fetcher: typeof fetch = async (input, options) => {
+      methods.push(new Request(input, options).method);
+      return Response.json({ posts: [], next_page: nextPage });
+    };
+
+    await expect(
+      upsertEsaPost({
+        team: "example-team",
+        accessToken: ACCESS_TOKEN,
+        canonicalUrl: "https://furedea.com/ja/blog/article-publishing/",
+        payload: PAYLOAD,
+        fetcher,
+      }),
+    ).rejects.toThrow();
+    expect(methods.filter((method) => method !== "GET")).toEqual([]);
+  },
+);
+
+test("does not publish when a later search page fails", async () => {
+  const methods: string[] = [];
+  const fetcher: typeof fetch = async (input, options) => {
+    const request = new Request(input, options);
+    methods.push(request.method);
+    const url = new URL(request.url);
+    return url.searchParams.has("page")
+      ? new Response(null, { status: 503 })
+      : Response.json({ posts: [], next_page: 2 });
+  };
+
+  await expect(
+    upsertEsaPost({
+      team: "example-team",
+      accessToken: ACCESS_TOKEN,
+      canonicalUrl: "https://furedea.com/ja/blog/article-publishing/",
+      payload: PAYLOAD,
+      fetcher,
+    }),
+  ).rejects.toThrow();
+  expect(methods.filter((method) => method !== "GET")).toEqual([]);
 });
 
 test("does not create a new esa revision when the copy already matches", async () => {
