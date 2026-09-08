@@ -32,6 +32,11 @@ interface EsaPostSummary extends EsaPostResult {
   wip: boolean;
 }
 
+interface EsaPostSearchResult {
+  posts: EsaPostSummary[];
+  next_page?: number | null;
+}
+
 export async function findEsaPost(options: EsaFinderOptions): Promise<EsaPostResult | undefined> {
   const match = await findEsaPostSummary(options);
   return match === undefined ? undefined : toEsaPostResult(match);
@@ -73,6 +78,31 @@ async function findEsaPostSummary(options: EsaFinderOptions): Promise<EsaPostSum
   const endpoint = new URL(getEndpoint(options.team, undefined));
   endpoint.searchParams.set("q", `body:"${options.canonicalUrl}"`);
   endpoint.searchParams.set("per_page", "100");
+  const marker = `Originally published at ${options.canonicalUrl}`;
+  const matches: EsaPostSummary[] = [];
+  let page = 1;
+
+  while (true) {
+    const result = await fetchEsaPostPage(endpoint, options);
+    matches.push(...result.posts.filter((post) => post.body_md.includes(marker)));
+    if (matches.length > 1) {
+      throw new Error(`Multiple esa posts reference ${options.canonicalUrl}.`);
+    }
+    if (result.next_page === undefined || result.next_page === null) {
+      return matches[0];
+    }
+    if (result.next_page <= page) {
+      throw new Error("esa API returned invalid post search pagination.");
+    }
+    page = result.next_page;
+    endpoint.searchParams.set("page", String(page));
+  }
+}
+
+async function fetchEsaPostPage(
+  endpoint: URL,
+  options: EsaFinderOptions,
+): Promise<EsaPostSearchResult> {
   const response = await (options.fetcher ?? fetch)(endpoint, {
     headers: { Authorization: `Bearer ${options.accessToken}` },
   });
@@ -86,13 +116,7 @@ async function findEsaPostSummary(options: EsaFinderOptions): Promise<EsaPostSum
     throw new Error("esa API returned an invalid post search response.");
   }
 
-  const marker = `Originally published at ${options.canonicalUrl}`;
-  const matches = result.posts.filter((post) => post.body_md.includes(marker));
-  if (matches.length > 1) {
-    throw new Error(`Multiple esa posts reference ${options.canonicalUrl}.`);
-  }
-  const match = matches[0];
-  return match;
+  return result;
 }
 
 export async function publishEsaPost(options: EsaPublisherOptions): Promise<EsaPostResult> {
@@ -133,13 +157,18 @@ function isEsaPostResult(value: unknown): value is EsaPostResult {
   );
 }
 
-function isEsaPostSearchResult(value: unknown): value is { posts: EsaPostSummary[] } {
+function isEsaPostSearchResult(value: unknown): value is EsaPostSearchResult {
   return (
     typeof value === "object" &&
     value !== null &&
     "posts" in value &&
     Array.isArray(value.posts) &&
-    value.posts.every(isEsaPostSummary)
+    value.posts.every(isEsaPostSummary) &&
+    (!("next_page" in value) ||
+      value.next_page === null ||
+      (typeof value.next_page === "number" &&
+        Number.isSafeInteger(value.next_page) &&
+        value.next_page > 0))
   );
 }
 

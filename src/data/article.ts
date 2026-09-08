@@ -1,3 +1,7 @@
+import { parseFrontmatter } from "@astrojs/markdown-remark";
+
+import { articleSchema, type ZennArticleMetadata } from "./article_schema.ts";
+
 export function getArticleDescription(markdown: string): string {
   return (
     markdown
@@ -6,15 +10,6 @@ export function getArticleDescription(markdown: string): string {
       .map((block) => block.trim())
       .find(isProseParagraph) ?? ""
   );
-}
-
-interface ZennArticleMetadata {
-  title: string;
-  emoji: string;
-  type: "tech" | "idea";
-  topics: string[];
-  published: boolean;
-  published_at: Date;
 }
 
 export interface WebsiteArticleMetadata {
@@ -72,21 +67,8 @@ export function parseZennArticleSource(source: string): ZennArticleSource {
     throw new ArticleSourceError("Article must start with YAML frontmatter.");
   }
 
-  const values = new Map(
-    match[1]
-      .split(/\r?\n/u)
-      .filter((line) => line.trim().length > 0)
-      .map(parseFrontmatterLine),
-  );
   return {
-    metadata: {
-      title: parseString(values, "title"),
-      emoji: parseString(values, "emoji"),
-      type: parseArticleType(values),
-      topics: parseTopics(values),
-      published: parseBoolean(values, "published"),
-      published_at: parsePublishedAt(values),
-    },
+    metadata: articleSchema.parse(parseFrontmatter(source).frontmatter),
     markdown: match[2],
   };
 }
@@ -143,9 +125,8 @@ export function toEsaPostPayload(
 
 export function toEsaMarkdown(markdown: string, options: EsaMarkdownOptions): string {
   const origin = new URL(options.canonicalUrl).origin;
-  const images = replaceImageUrls(markdown, origin);
-  const body = transformOutsideFences(images, (prose) =>
-    convertDetails(convertMessages(convertCaptions(prose))),
+  const body = transformOutsideFences(markdown, (prose) =>
+    convertDetails(convertMessages(convertCaptions(replaceImageUrls(prose, origin)))),
   );
   return `${body.trim()}\n\n---\n\nOriginally published at ${options.canonicalUrl}`;
 }
@@ -169,7 +150,8 @@ function protectFencedBlocks(markdown: string, fencedBlocks: string[]): string {
     }
     if (fence !== undefined) {
       fence.lines.push(line);
-      if (marker?.[0] === fence.character && marker.length >= fence.length) {
+      const closing = /^ {0,3}(`{3,}|~{3,})[ \t]*\r?$/u.exec(line)?.[1];
+      if (closing?.[0] === fence.character && closing.length >= fence.length) {
         protectedLines.push(storeFencedBlock(fence.lines, fencedBlocks));
         fence = undefined;
       }
@@ -210,20 +192,7 @@ function convertCaptions(markdown: string): string {
 }
 
 function replaceImageUrls(markdown: string, origin: string): string {
-  let fence: string | undefined;
-  return markdown
-    .split("\n")
-    .map((line) => {
-      const marker = /^(?:\s*)(`{3,}|~{3,})/u.exec(line)?.[1];
-      if (marker !== undefined && (fence === undefined || marker[0] === fence[0])) {
-        fence = fence === undefined ? marker : undefined;
-        return line;
-      }
-      return fence === undefined
-        ? line.replace(/(!\[[^\]]*\]\()\/images\//gu, `$1${origin}/images/`)
-        : line;
-    })
-    .join("\n");
+  return markdown.replace(/(!\[[^\]]*\]\()\/images\//gu, `$1${origin}/images/`);
 }
 
 function convertMessages(markdown: string): string {
@@ -252,84 +221,6 @@ function escapeHtml(value: string): string {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
-}
-
-function parseFrontmatterLine(line: string): [string, string] {
-  const match = /^([a-z_]+):\s*(.+)$/u.exec(line);
-  if (match === null) {
-    throw new ArticleSourceError(`Unsupported frontmatter line: ${line}`);
-  }
-  return [match[1], stripYamlComment(match[2]).trim()];
-}
-
-function stripYamlComment(value: string): string {
-  let isQuoted = false;
-  for (let index = 0; index < value.length; index += 1) {
-    if (value[index] === '"' && value[index - 1] !== "\\") {
-      isQuoted = !isQuoted;
-    }
-    if (!isQuoted && value[index] === "#" && value[index - 1] === " ") {
-      return value.slice(0, index).trimEnd();
-    }
-  }
-  return value;
-}
-
-function parseString(values: Map<string, string>, key: string): string {
-  const value = requireValue(values, key);
-  if (!value.startsWith('"')) {
-    return value;
-  }
-  const parsed: unknown = JSON.parse(value);
-  if (typeof parsed !== "string" || parsed.length === 0) {
-    throw new ArticleSourceError(`${key} must be a non-empty string.`);
-  }
-  return parsed;
-}
-
-function parseArticleType(values: Map<string, string>): "tech" | "idea" {
-  const value = parseString(values, "type");
-  if (value !== "tech" && value !== "idea") {
-    throw new ArticleSourceError("type must be tech or idea.");
-  }
-  return value;
-}
-
-function parseTopics(values: Map<string, string>): string[] {
-  const parsed: unknown = JSON.parse(requireValue(values, "topics"));
-  if (
-    !Array.isArray(parsed) ||
-    parsed.length > 5 ||
-    !parsed.every((topic) => typeof topic === "string" && topic.length > 0)
-  ) {
-    throw new ArticleSourceError("topics must contain at most five non-empty strings.");
-  }
-  return parsed;
-}
-
-function parseBoolean(values: Map<string, string>, key: string): boolean {
-  const value = requireValue(values, key);
-  if (value !== "true" && value !== "false") {
-    throw new ArticleSourceError(`${key} must be true or false.`);
-  }
-  return value === "true";
-}
-
-function parsePublishedAt(values: Map<string, string>): Date {
-  const value = requireValue(values, "published_at");
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    throw new ArticleSourceError("published_at must be a valid date.");
-  }
-  return date;
-}
-
-function requireValue(values: Map<string, string>, key: string): string {
-  const value = values.get(key);
-  if (value === undefined) {
-    throw new ArticleSourceError(`Missing ${key} frontmatter.`);
-  }
-  return value;
 }
 
 function isProseParagraph(block: string): boolean {

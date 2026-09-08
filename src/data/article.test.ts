@@ -65,6 +65,44 @@ test("preserves image examples inside fenced code blocks", () => {
   ).toContain(markdown);
 });
 
+test.each(["`", "~"])("preserves shorter %s fences inside image examples", (marker) => {
+  const markdown = [
+    marker.repeat(4) + "markdown",
+    marker.repeat(3),
+    "![Example](/images/article/example.png)",
+    marker.repeat(3),
+    marker.repeat(4),
+  ].join("\n");
+  const source = `${markdown}\n\n![Published image](/images/article/published.png)`;
+
+  const exported = toEsaMarkdown(source, {
+    canonicalUrl: "https://furedea.com/ja/blog/article-publishing/",
+  });
+
+  expect(exported).toContain(markdown);
+  expect(exported).toContain(
+    "![Published image](https://furedea.com/images/article/published.png)",
+  );
+});
+
+test.each(["```example", "    ```"])(
+  "preserves code until a valid closing fence after %s",
+  (invalidClosing) => {
+    const markdown = [
+      "```markdown",
+      invalidClosing,
+      "![Example](/images/article/example.png)",
+      "```",
+    ].join("\n");
+
+    expect(
+      toEsaMarkdown(markdown, {
+        canonicalUrl: "https://furedea.com/ja/blog/article-publishing/",
+      }),
+    ).toContain(markdown);
+  },
+);
+
 test("attributes the esa copy to the canonical website article", () => {
   const canonicalUrl = "https://furedea.com/ja/blog/article-publishing/";
 
@@ -220,6 +258,49 @@ Body.
 `;
 
   expect(parseZennArticleSource(source).metadata.title).toBe("A # character stays in the title");
+});
+
+test("reads YAML quotes and block topic lists without changing publication metadata", () => {
+  const source = `---
+# Metadata shared by Zenn, the website, and esa.
+title: 'A # character and ''quoted'' words'
+emoji: '📝'
+type: 'tech'
+topics:
+  - astro
+  - 'zenn'
+published: false
+published_at: '2026-08-04'
+---
+Article body.
+`;
+
+  expect(parseZennArticleSource(source)).toEqual({
+    metadata: {
+      title: "A # character and 'quoted' words",
+      emoji: "📝",
+      type: "tech",
+      topics: ["astro", "zenn"],
+      published: false,
+      published_at: new Date("2026-08-04T00:00:00.000Z"),
+    },
+    markdown: "Article body.\n",
+  });
+});
+
+test.each(["null", "false", "123", ""])("rejects a non-date publication value: %s", (value) => {
+  const source = `---
+title: "Article"
+emoji: "📝"
+type: "tech"
+topics: []
+published: false
+published_at: ${value}
+---
+Body.
+`;
+
+  expect(() => parseZennArticleSource(source)).toThrow();
 });
 
 test("maps a published Zenn article to a shipped esa post", () => {
