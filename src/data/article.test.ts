@@ -65,6 +65,44 @@ test("preserves image examples inside fenced code blocks", () => {
   ).toContain(markdown);
 });
 
+test.each(["`", "~"])("preserves shorter %s fences inside image examples", (marker) => {
+  const markdown = [
+    marker.repeat(4) + "markdown",
+    marker.repeat(3),
+    "![Example](/images/article/example.png)",
+    marker.repeat(3),
+    marker.repeat(4),
+  ].join("\n");
+  const source = `${markdown}\n\n![Published image](/images/article/published.png)`;
+
+  const exported = toEsaMarkdown(source, {
+    canonicalUrl: "https://furedea.com/ja/blog/article-publishing/",
+  });
+
+  expect(exported).toContain(markdown);
+  expect(exported).toContain(
+    "![Published image](https://furedea.com/images/article/published.png)",
+  );
+});
+
+test.each(["```example", "    ```"])(
+  "preserves code until a valid closing fence after %s",
+  (invalidClosing) => {
+    const markdown = [
+      "```markdown",
+      invalidClosing,
+      "![Example](/images/article/example.png)",
+      "```",
+    ].join("\n");
+
+    expect(
+      toEsaMarkdown(markdown, {
+        canonicalUrl: "https://furedea.com/ja/blog/article-publishing/",
+      }),
+    ).toContain(markdown);
+  },
+);
+
 test("attributes the esa copy to the canonical website article", () => {
   const canonicalUrl = "https://furedea.com/ja/blog/article-publishing/";
 

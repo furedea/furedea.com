@@ -125,9 +125,8 @@ export function toEsaPostPayload(
 
 export function toEsaMarkdown(markdown: string, options: EsaMarkdownOptions): string {
   const origin = new URL(options.canonicalUrl).origin;
-  const images = replaceImageUrls(markdown, origin);
-  const body = transformOutsideFences(images, (prose) =>
-    convertDetails(convertMessages(convertCaptions(prose))),
+  const body = transformOutsideFences(markdown, (prose) =>
+    convertDetails(convertMessages(convertCaptions(replaceImageUrls(prose, origin)))),
   );
   return `${body.trim()}\n\n---\n\nOriginally published at ${options.canonicalUrl}`;
 }
@@ -151,7 +150,8 @@ function protectFencedBlocks(markdown: string, fencedBlocks: string[]): string {
     }
     if (fence !== undefined) {
       fence.lines.push(line);
-      if (marker?.[0] === fence.character && marker.length >= fence.length) {
+      const closing = /^ {0,3}(`{3,}|~{3,})[ \t]*\r?$/u.exec(line)?.[1];
+      if (closing?.[0] === fence.character && closing.length >= fence.length) {
         protectedLines.push(storeFencedBlock(fence.lines, fencedBlocks));
         fence = undefined;
       }
@@ -192,20 +192,7 @@ function convertCaptions(markdown: string): string {
 }
 
 function replaceImageUrls(markdown: string, origin: string): string {
-  let fence: string | undefined;
-  return markdown
-    .split("\n")
-    .map((line) => {
-      const marker = /^(?:\s*)(`{3,}|~{3,})/u.exec(line)?.[1];
-      if (marker !== undefined && (fence === undefined || marker[0] === fence[0])) {
-        fence = fence === undefined ? marker : undefined;
-        return line;
-      }
-      return fence === undefined
-        ? line.replace(/(!\[[^\]]*\]\()\/images\//gu, `$1${origin}/images/`)
-        : line;
-    })
-    .join("\n");
+  return markdown.replace(/(!\[[^\]]*\]\()\/images\//gu, `$1${origin}/images/`);
 }
 
 function convertMessages(markdown: string): string {
