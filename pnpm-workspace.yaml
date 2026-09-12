@@ -26,3 +26,5 @@ minimumReleaseAgeExclude:
   - sharp@0.35.4
   # Renovate security update: svgo@4.1.0
   - svgo@4.1.0
+  # Renovate security update: vitest@4.1.11
+  - vitest@4.1.11
