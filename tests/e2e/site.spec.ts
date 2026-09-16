@@ -47,11 +47,14 @@ test.describe("localized top pages", () => {
   });
 });
 
-test("does not publish an unavailable email address", async ({ page }) => {
+test("publishes the profile email address", async ({ page }) => {
   await page.goto("/ja/");
 
-  await expect(page.getByText("shigyo@posl.ait.kyushu-u.ac.jp", { exact: true })).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "連絡先" })).toHaveCount(0);
+  await expect(page.locator('.site-nav a[href$="#contact"]')).toHaveCount(1);
+  await expect(page.getByRole("link", { name: profile.email })).toHaveAttribute(
+    "href",
+    `mailto:${profile.email}`,
+  );
 });
 
 test("renders news collection records", async ({ page }) => {
