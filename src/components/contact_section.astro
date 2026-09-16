@@ -13,18 +13,14 @@ const t = useTranslations(lang);
 const email = profile.email;
 ---
 
-{
-  email && (
-    <Section id="contact" title={t("section.contact")}>
-      <div class="contact-grid">
-        <div class="contact-item">
-          <h3>{t("contact.email")}</h3>
-          <a href={`mailto:${email}`}>{email}</a>
-        </div>
-      </div>
-    </Section>
-  )
-}
+<Section id="contact" title={t("section.contact")}>
+  <div class="contact-grid">
+    <div class="contact-item">
+      <h3>{t("contact.email")}</h3>
+      <a href={`mailto:${email}`}>{email}</a>
+    </div>
+  </div>
+</Section>
 
 <style>
   .contact-grid {

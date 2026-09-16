@@ -1,7 +1,7 @@
 ---
 import type { Lang } from "@i18n/ui";
 import { useTranslations, getLocalePrefix } from "@i18n/utils";
-import { getVisibleHomeSections } from "@data/sections";
+import { HOME_SECTIONS } from "@data/sections";
 import { BASE_PATH } from "../consts";
 import LanguageToggle from "./language_toggle.astro";
 
@@ -13,7 +13,6 @@ interface Props {
 const { lang, languagePath } = Astro.props;
 const t = useTranslations(lang);
 const base = getLocalePrefix(lang);
-const sections = getVisibleHomeSections();
 ---
 
 <header class="site-header">
@@ -34,7 +33,7 @@ const sections = getVisibleHomeSections();
     <nav id="nav-menu" class="site-nav" aria-label="Main">
       <ul>
         {
-          sections.map((id) => (
+          HOME_SECTIONS.map((id) => (
             <li>
               <a href={`${base}/#${id}`}>{t(`nav.${id}`)}</a>
             </li>
