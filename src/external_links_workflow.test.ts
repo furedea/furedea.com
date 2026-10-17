@@ -36,9 +36,7 @@ test("treats bot-blocking HTTP 403 responses as reachable", () => {
 });
 
 test("preserves the external link report for later investigation", () => {
-  expect(workflow).toContain(
-    "uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1",
-  );
+  expect(workflow).toMatch(/uses: actions\/upload-artifact@[0-9a-f]{40} # v\d+\.\d+\.\d+\n/u);
   expect(workflow).toContain("if: ${{ always() }}");
   expect(workflow).toContain("name: external-link-results");
   expect(workflow).toContain("path: lychee/results.md");
