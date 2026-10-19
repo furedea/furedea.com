@@ -30,6 +30,9 @@ const activities = await getActivities();
 
 <style>
   .activity-list {
+    display: grid;
+    grid-template-columns: max-content max-content minmax(0, 1fr);
+    column-gap: 0.75rem;
     list-style: none;
   }
 

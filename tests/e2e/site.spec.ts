@@ -173,6 +173,27 @@ test("shows dated activities with their periods, labels, and links", async ({ pa
   );
 });
 
+test("aligns activity titles and badge widths across entries", async ({ page }) => {
+  for (const lang of ["ja", "en"] as const) {
+    await page.goto(`/${lang}/`);
+
+    const entries = page.locator('section[aria-labelledby="activities"] .activity-entry');
+    const titleLefts = await entries
+      .locator(".activity-title")
+      .evaluateAll((titles) =>
+        titles.map((title) => Math.round(title.getBoundingClientRect().left)),
+      );
+    const badgeWidths = await entries
+      .locator(".badge")
+      .evaluateAll((badges) =>
+        badges.map((badge) => Math.round(badge.getBoundingClientRect().width)),
+      );
+    expect(titleLefts.length).toBeGreaterThan(1);
+    expect(new Set(titleLefts).size).toBe(1);
+    expect(new Set(badgeWidths).size).toBe(1);
+  }
+});
+
 test("renders publication collection metadata", async ({ page }) => {
   await page.goto("/en/");
 
