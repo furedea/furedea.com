@@ -18,7 +18,7 @@ export function toNewsItems(records: readonly SiteRecord[]): NewsItem[] {
   const publications = records.filter(isPublicationRecord);
   const standaloneItems = records.filter(isNewsRecord);
   const publicationItems = publications.flatMap(({ news, url }) =>
-    news ? [{ ...news, ...(url ? { url } : {}) }] : [],
+    news ? [{ ...(url ? { url } : {}), ...news }] : [],
   );
 
   return [...standaloneItems, ...publicationItems].sort((left, right) =>

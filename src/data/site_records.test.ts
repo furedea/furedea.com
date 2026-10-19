@@ -53,6 +53,22 @@ test("projects a publication announcement into news with the publication URL", (
   ]);
 });
 
+test("links a publication announcement to its own event page when given", () => {
+  const items = toNewsItems([
+    publication({
+      url: "https://example.com/publication",
+      news: {
+        date: "2026-07-24",
+        title: { ja: "研究発表を行いました．", en: "Presented our work." },
+        url: "https://example.com/event",
+        type: "talk",
+      },
+    }),
+  ]);
+
+  expect(items[0]?.url).toBe("https://example.com/event");
+});
+
 test("orders projected and standalone news from newest to oldest", () => {
   const items = toNewsItems([
     publication({

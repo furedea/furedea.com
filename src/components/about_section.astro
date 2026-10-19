@@ -2,7 +2,9 @@
 import type { Lang } from "@i18n/ui";
 import { useTranslations, pickLocale } from "@i18n/utils";
 import { education } from "@data/education";
+import { profile } from "@data/profile";
 import Section from "./section.astro";
+import TagList from "./tag_list.astro";
 
 interface Props {
   lang: Lang;
@@ -13,6 +15,10 @@ const t = useTranslations(lang);
 ---
 
 <Section id="about" title={t("section.about")}>
+  <p class="introduction">{pickLocale(profile.introduction, lang)}</p>
+  <div class="skills">
+    <TagList tags={profile.skills} />
+  </div>
   <h3 class="sub-heading">{t("about.education")}</h3>
   <ul class="timeline">
     {
@@ -30,6 +36,14 @@ const t = useTranslations(lang);
 </Section>
 
 <style>
+  .introduction {
+    margin-bottom: 1rem;
+  }
+
+  .skills {
+    margin-bottom: 2.5rem;
+  }
+
   .sub-heading {
     font-size: 1.125rem;
     font-weight: 600;

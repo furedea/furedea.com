@@ -16,6 +16,8 @@ interface Profile {
   department: LocalizedText;
   university: LocalizedText;
   email: string;
+  introduction: LocalizedText;
+  skills: string[];
   socialLinks: SocialLink[];
 }
 
@@ -30,6 +32,11 @@ export const profile: Profile = {
   },
   university: { ja: "九州大学", en: "Kyushu University" },
   email: "shigyo@posl.ait.kyushu-u.ac.jp",
+  introduction: {
+    ja: "AI Coding Agent と開発基盤に関心のある，ソフトウェアエンジニア志望の修士学生です．",
+    en: "I'm a master's student aspiring to be a software engineer, interested in AI coding agents and developer infrastructure.",
+  },
+  skills: ["Python", "Rust", "TypeScript", "Bash", "Nix", "Docker", "GitHub Actions"],
   socialLinks: [
     { platform: "GitHub", url: "https://github.com/furedea", icon: "github" },
     { platform: "X", url: "https://x.com/furedea596", icon: "x" },
