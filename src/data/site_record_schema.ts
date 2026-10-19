@@ -7,14 +7,19 @@ const localizedTextSchema = z
   })
   .strict();
 
-export const newsSchema = z
+export const activitySchema = z
   .object({
     date: z.iso.date(),
+    endDate: z.iso.date().optional(),
     title: localizedTextSchema,
     url: z.url().optional(),
-    type: z.enum(["paper", "talk", "award", "general"]),
+    type: z.enum(["paper", "talk", "award", "program", "study-abroad", "general"]),
   })
-  .strict();
+  .strict()
+  .refine(({ date, endDate }) => endDate === undefined || date <= endDate, {
+    message: "endDate must not precede date",
+    path: ["endDate"],
+  });
 
 export const publicationSchema = z
   .object({
@@ -29,12 +34,12 @@ export const publicationSchema = z
     pdfUrl: z.url().optional(),
     slidesUrl: z.url().optional(),
     bibtex: z.string().min(1).optional(),
-    news: newsSchema.optional(),
+    activity: activitySchema.optional(),
   })
   .strict();
 
-export type NewsRecord = z.infer<typeof newsSchema>;
+export type ActivityRecord = z.infer<typeof activitySchema>;
 export type PublicationRecord = z.infer<typeof publicationSchema>;
 
-export const siteRecordSchema = z.union([publicationSchema, newsSchema]);
+export const siteRecordSchema = z.union([publicationSchema, activitySchema]);
 export type SiteRecord = z.infer<typeof siteRecordSchema>;

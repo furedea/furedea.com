@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 
 import type { PublicationRecord } from "./site_record_schema";
-import { toNewsItems, toPublications } from "./site_records";
+import { formatActivityPeriod, toActivities, toPublications } from "./site_records";
 
 test("uses Japanese publication metadata on Japanese pages", () => {
   const items = toPublications(
@@ -25,11 +25,11 @@ test("uses Japanese publication metadata on Japanese pages", () => {
   });
 });
 
-test("projects a publication announcement into news with the publication URL", () => {
-  const items = toNewsItems([
+test("projects a publication announcement into activities with the publication URL", () => {
+  const items = toActivities([
     publication({
       url: "https://example.com/publication",
-      news: {
+      activity: {
         date: "2026-07-24",
         title: {
           ja: "研究発表を行いました．",
@@ -54,10 +54,10 @@ test("projects a publication announcement into news with the publication URL", (
 });
 
 test("links a publication announcement to its own event page when given", () => {
-  const items = toNewsItems([
+  const items = toActivities([
     publication({
       url: "https://example.com/publication",
-      news: {
+      activity: {
         date: "2026-07-24",
         title: { ja: "研究発表を行いました．", en: "Presented our work." },
         url: "https://example.com/event",
@@ -69,10 +69,10 @@ test("links a publication announcement to its own event page when given", () => 
   expect(items[0]?.url).toBe("https://example.com/event");
 });
 
-test("orders projected and standalone news from newest to oldest", () => {
-  const items = toNewsItems([
+test("orders projected and standalone activities from newest to oldest", () => {
+  const items = toActivities([
     publication({
-      news: {
+      activity: {
         date: "2026-03-15",
         title: { ja: "新しい発表", en: "Newer announcement" },
         type: "paper",
@@ -86,6 +86,16 @@ test("orders projected and standalone news from newest to oldest", () => {
   ]);
 
   expect(items.map(({ date }) => date)).toEqual(["2026-03-15", "2025-08-01"]);
+});
+
+test("shows a single-day activity as its month", () => {
+  expect(formatActivityPeriod({ date: "2026-07-24" })).toBe("2026.07");
+});
+
+test("shows an activity period from its start month to its end month", () => {
+  expect(formatActivityPeriod({ date: "2023-11-01", endDate: "2024-01-31" })).toBe(
+    "2023.11–2024.01",
+  );
 });
 
 test("formats a publication author list for display", () => {

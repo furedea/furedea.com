@@ -75,7 +75,15 @@ test("lists works under their own nav item, each card linking to the work", asyn
 });
 
 test("orders home sections for engineering readers", async ({ page }) => {
-  const expectedIds = ["about", "works", "research", "publications", "blog", "contact"];
+  const expectedIds = [
+    "about",
+    "works",
+    "research",
+    "publications",
+    "activities",
+    "blog",
+    "contact",
+  ];
 
   await page.goto("/ja/");
 
@@ -124,23 +132,44 @@ test("lists personal and team works in the agreed order", async ({ page }) => {
   await expect(teamWork).toContainText("Fukuoka Mitou");
 });
 
-test("groups publications and talks in one section", async ({ page }) => {
+test("keeps publications and activities in separate sections", async ({ page }) => {
   await page.goto("/ja/");
 
-  const section = page.locator('section[aria-labelledby="publications"]');
-  await expect(section.getByRole("heading", { level: 2 })).toHaveText("Publications & Talks");
-  await expect(section.locator(".pub-entry").first()).toBeVisible();
-  await expect(section.locator(".news-entry").first()).toBeVisible();
-  await expect(page.locator("#news")).toHaveCount(0);
+  const publications = page.locator('section[aria-labelledby="publications"]');
+  await expect(publications.getByRole("heading", { level: 2 })).toHaveText("Publications");
+  await expect(publications.locator(".pub-entry").first()).toBeVisible();
+  await expect(publications.locator(".activity-entry")).toHaveCount(0);
+  const activities = page.locator('section[aria-labelledby="activities"]');
+  await expect(activities.getByRole("heading", { level: 2 })).toHaveText("Activities");
+  await expect(activities.locator(".activity-entry").first()).toBeVisible();
 });
 
-test("renders news collection records", async ({ page }) => {
+test("renders activity collection records with localized type labels", async ({ page }) => {
   await page.goto("/ja/");
 
-  const entry = page.locator(".news-entry").first();
+  const entry = page.locator(".activity-entry").first();
   await expect(entry).toBeVisible();
-  await expect(entry.locator("time")).toHaveAttribute("datetime", /^\d{4}-\d{2}-\d{2}$/);
-  await expect(entry.locator(".badge")).toHaveText(/^(paper|talk|award|general)$/);
+  await expect(entry.locator("time").first()).toHaveAttribute("datetime", /^\d{4}-\d{2}-\d{2}$/);
+  await expect(entry.locator(".badge")).toHaveText(/^(論文|発表|受賞|プログラム|留学|お知らせ)$/);
+});
+
+test("shows dated programs with their periods and links", async ({ page }) => {
+  await page.goto("/en/");
+
+  const activities = page.locator('section[aria-labelledby="activities"]');
+  const studyAbroad = activities.locator(".activity-entry", { hasText: "Q²PEC" });
+  await expect(studyAbroad).toContainText("2024.08–2024.09");
+  await expect(studyAbroad.locator(".badge")).toHaveText("Study abroad");
+  await expect(studyAbroad.getByRole("link")).toHaveAttribute(
+    "href",
+    "https://www.eng.kyushu-u.ac.jp/programs/program-q2pec/",
+  );
+  const program = activities.locator(".activity-entry", { hasText: "Fukuoka Mitou" });
+  await expect(program).toContainText("2023.11–2024.01");
+  await expect(program.getByRole("link")).toHaveAttribute(
+    "href",
+    "https://note.com/mitou_fukuoka/n/n397fe44895c6",
+  );
 });
 
 test("renders publication collection metadata", async ({ page }) => {

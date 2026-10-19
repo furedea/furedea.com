@@ -1,10 +1,8 @@
 ---
 import type { Lang } from "@i18n/ui";
 import { useTranslations } from "@i18n/utils";
-import { getNews } from "@data/news";
 import { getPublications } from "@data/publications";
 import Section from "./section.astro";
-import NewsEntry from "./news_entry.astro";
 import PublicationEntry from "./publication_entry.astro";
 
 interface Props {
@@ -14,7 +12,6 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const publications = await getPublications(lang);
-const news = await getNews();
 ---
 
 <Section id="publications" title={t("section.publications")}>
@@ -29,25 +26,11 @@ const news = await getNews();
       <p class="empty">{t("publications.empty")}</p>
     )
   }
-  {
-    news.length > 0 && (
-      <ul class="news-list">
-        {news.map((item) => (
-          <NewsEntry item={item} lang={lang} />
-        ))}
-      </ul>
-    )
-  }
 </Section>
 
 <style>
-  .pub-list,
-  .news-list {
+  .pub-list {
     list-style: none;
-  }
-
-  .news-list {
-    margin-top: 1.5rem;
   }
 
   .empty {

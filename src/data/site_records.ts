@@ -1,12 +1,12 @@
 import type { Lang } from "@i18n/ui";
 import { pickLocale } from "@i18n/utils";
 
-import type { NewsRecord, PublicationRecord, SiteRecord } from "./site_record_schema";
+import type { ActivityRecord, PublicationRecord, SiteRecord } from "./site_record_schema";
 
-export type NewsItem = NewsRecord;
+export type Activity = ActivityRecord;
 export type Publication = Omit<
   PublicationRecord,
-  "title" | "authors" | "venue" | "venueShort" | "news"
+  "title" | "authors" | "venue" | "venueShort" | "activity"
 > & {
   title: string;
   authors: string;
@@ -14,16 +14,24 @@ export type Publication = Omit<
   venueShort?: string;
 };
 
-export function toNewsItems(records: readonly SiteRecord[]): NewsItem[] {
+export function toActivities(records: readonly SiteRecord[]): Activity[] {
   const publications = records.filter(isPublicationRecord);
-  const standaloneItems = records.filter(isNewsRecord);
-  const publicationItems = publications.flatMap(({ news, url }) =>
-    news ? [{ ...(url ? { url } : {}), ...news }] : [],
+  const standaloneItems = records.filter(isActivityRecord);
+  const publicationItems = publications.flatMap(({ activity, url }) =>
+    activity ? [{ ...(url ? { url } : {}), ...activity }] : [],
   );
 
   return [...standaloneItems, ...publicationItems].sort((left, right) =>
     right.date.localeCompare(left.date),
   );
+}
+
+export function formatActivityPeriod({
+  date,
+  endDate,
+}: Pick<Activity, "date" | "endDate">): string {
+  const start = toYearMonth(date);
+  return endDate ? `${start}–${toYearMonth(endDate)}` : start;
 }
 
 export function toPublications(records: readonly SiteRecord[], lang: Lang): Publication[] {
@@ -45,6 +53,10 @@ export function toPublications(records: readonly SiteRecord[], lang: Lang): Publ
     }));
 }
 
+function toYearMonth(isoDate: string): string {
+  return isoDate.slice(0, 7).replace("-", ".");
+}
+
 function authorSeparator(lang: Lang): string {
   return lang === "ja" ? "，" : ", ";
 }
@@ -53,6 +65,6 @@ function isPublicationRecord(record: SiteRecord): record is PublicationRecord {
   return "authors" in record;
 }
 
-function isNewsRecord(record: SiteRecord): record is NewsRecord {
+function isActivityRecord(record: SiteRecord): record is ActivityRecord {
   return !isPublicationRecord(record);
 }

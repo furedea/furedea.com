@@ -1,26 +1,27 @@
 ---
 import type { Lang } from "@i18n/ui";
-import type { NewsItem } from "@data/news";
-import { pickLocale } from "@i18n/utils";
+import { formatActivityPeriod, type Activity } from "@data/activities";
+import { pickLocale, useTranslations } from "@i18n/utils";
 import OptionalLink from "./optional_link.astro";
 
 interface Props {
-  item: NewsItem;
+  item: Activity;
   lang: Lang;
 }
 
 const { item, lang } = Astro.props;
+const t = useTranslations(lang);
 const title = pickLocale(item.title, lang);
 ---
 
-<li class="news-entry">
-  <time datetime={item.date}>{item.date}</time>
-  <span class={`badge badge-${item.type}`}>{item.type}</span>
+<li class="activity-entry">
+  <time datetime={item.date}>{formatActivityPeriod(item)}</time>
+  <span class={`badge badge-${item.type}`}>{t(`activity.type.${item.type}`)}</span>
   <OptionalLink href={item.url}>{title}</OptionalLink>
 </li>
 
 <style>
-  .news-entry {
+  .activity-entry {
     display: flex;
     align-items: baseline;
     gap: 0.75rem;
@@ -59,7 +60,7 @@ const title = pickLocale(item.title, lang);
   }
 
   @media (width < 640px) {
-    .news-entry {
+    .activity-entry {
       flex-wrap: wrap;
     }
   }
