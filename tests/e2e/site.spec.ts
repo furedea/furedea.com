@@ -204,10 +204,14 @@ test("renders publication collection metadata", async ({ page }) => {
   await expect(publication.locator(".pub-venue")).toContainText(/, \d{4}$/);
 });
 
-test("labels non-peer-reviewed publications on Japanese pages", async ({ page }) => {
-  await page.goto("/ja/");
+test("does not label publications with their peer-review status", async ({ page }) => {
+  for (const lang of ["ja", "en"] as const) {
+    await page.goto(`/${lang}/`);
 
-  await expect(page.locator(".pub-review-status").first()).toHaveText("査読なし");
+    const publications = page.locator('section[aria-labelledby="publications"]');
+    await expect(publications.locator(".pub-entry").first()).toBeVisible();
+    await expect(publications.getByText(/査読|peer-reviewed/i)).toHaveCount(0);
+  }
 });
 
 test("uses localized alternative text for the profile portrait", async ({ page }) => {
