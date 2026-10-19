@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { profile } from "../../src/data/profile";
 import { site } from "../../src/data/site";
+import { works } from "../../src/data/works";
 
 const linkByLabel = Object.fromEntries(
   profile.socialLinks.map((link) => [link.platform, link.url]),
@@ -55,6 +56,19 @@ test("publishes the profile email address", async ({ page }) => {
     "href",
     `mailto:${profile.email}`,
   );
+});
+
+test("lists works under their own nav item, each card linking to the work", async ({ page }) => {
+  for (const lang of ["ja", "en"] as const) {
+    await page.goto(`/${lang}/`);
+
+    await expect(page.locator('.site-nav a[href$="#works"]')).toHaveCount(1);
+    for (const work of works) {
+      const card = page.locator(".work-card", { hasText: work.title[lang] });
+      await expect(card).toHaveAttribute("href", work.url);
+      await expect(card).toContainText(work.description[lang]);
+    }
+  }
 });
 
 test("renders news collection records", async ({ page }) => {

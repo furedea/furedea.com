@@ -1,6 +1,7 @@
 export const HOME_SECTIONS = [
   "about",
   "research",
+  "works",
   "publications",
   "news",
   "blog",
