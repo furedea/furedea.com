@@ -7,7 +7,6 @@ import AboutSection from "@components/about_section.astro";
 import ResearchSection from "@components/research_section.astro";
 import WorksSection from "@components/works_section.astro";
 import PublicationsSection from "@components/publications_section.astro";
-import NewsSection from "@components/news_section.astro";
 import BlogSection from "@components/blog_section.astro";
 import ContactSection from "@components/contact_section.astro";
 import { HOME_SECTIONS, type HomeSectionId } from "@data/sections";
@@ -19,10 +18,9 @@ type SectionComponent = (typeof sectionComponents)[HomeSectionId];
 
 const sectionComponents = {
   about: AboutSection,
-  research: ResearchSection,
   works: WorksSection,
+  research: ResearchSection,
   publications: PublicationsSection,
-  news: NewsSection,
   blog: BlogSection,
   contact: ContactSection,
 } as const satisfies Record<HomeSectionId, unknown>;

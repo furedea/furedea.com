@@ -71,6 +71,66 @@ test("lists works under their own nav item, each card linking to the work", asyn
   }
 });
 
+test("orders home sections for engineering readers", async ({ page }) => {
+  const expectedIds = ["about", "works", "research", "publications", "blog", "contact"];
+
+  await page.goto("/ja/");
+
+  const sectionIds = await page
+    .locator("main section[aria-labelledby]")
+    .evaluateAll((sections) => sections.map((section) => section.getAttribute("aria-labelledby")));
+  expect(sectionIds).toEqual(expectedIds);
+  const navTargets = await page
+    .locator(".site-nav a[href*='#']")
+    .evaluateAll((links) => links.map((link) => link.getAttribute("href")?.split("#")[1]));
+  expect(navTargets).toEqual(expectedIds);
+});
+
+test("introduces the profile and skills before education in About", async ({ page }) => {
+  for (const lang of ["ja", "en"] as const) {
+    await page.goto(`/${lang}/`);
+
+    const about = page.locator('section[aria-labelledby="about"]');
+    const introduction = about.getByText(profile.introduction[lang], { exact: true });
+    await expect(introduction).toBeVisible();
+    for (const skill of profile.skills) {
+      await expect(about.locator(".tag-chip", { hasText: skill })).toBeVisible();
+    }
+    const introductionBox = await introduction.boundingBox();
+    const educationBox = await about.locator(".timeline").boundingBox();
+    expect(introductionBox!.y).toBeLessThan(educationBox!.y);
+  }
+});
+
+test("lists personal and team works in the agreed order", async ({ page }) => {
+  await page.goto("/en/");
+
+  await expect(page.locator(".work-card h3")).toHaveText([
+    "Effort or Luck",
+    "agent-harness",
+    "apple-mail-cli",
+    "reflex-state",
+    "book-agent",
+    "LLM-chatbot",
+  ]);
+  const teamWork = page.locator(".work-card", { hasText: "LLM-chatbot" });
+  await expect(teamWork).toHaveAttribute(
+    "href",
+    "https://mitou-fukuoka.org/works/genius_catalog.html",
+  );
+  await expect(teamWork).toContainText("Fukuoka Mitou");
+});
+
+test("groups publications and talks in one section", async ({ page }) => {
+  await page.goto("/ja/");
+
+  const section = page.locator('section[aria-labelledby="publications"]');
+  await expect(section.getByRole("heading", { level: 2 })).toHaveText("Publications & Talks");
+  await expect(section.locator(".pub-entry").first()).toBeVisible();
+  await expect(section.locator(".news-entry").first()).toBeVisible();
+  await expect(page.locator("#news")).toHaveCount(0);
+});
+
 test("renders news collection records", async ({ page }) => {
   await page.goto("/ja/");
 
