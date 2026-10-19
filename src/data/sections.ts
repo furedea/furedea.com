@@ -3,6 +3,7 @@ export const HOME_SECTIONS = [
   "works",
   "research",
   "publications",
+  "activities",
   "blog",
   "contact",
 ] as const;

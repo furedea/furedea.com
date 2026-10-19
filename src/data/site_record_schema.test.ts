@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import { newsSchema, publicationSchema } from "./site_record_schema";
+import { activitySchema, publicationSchema } from "./site_record_schema";
 
 test("rejects unknown publication fields", () => {
   const result = publicationSchema.safeParse({
@@ -19,11 +19,33 @@ test("rejects unknown publication fields", () => {
   );
 });
 
-test("rejects news dates outside the ISO date format", () => {
-  const result = newsSchema.safeParse({
+test("rejects activity dates outside the ISO date format", () => {
+  const result = activitySchema.safeParse({
     date: "August 12, 2026",
     title: { ja: "ニュース", en: "News" },
     type: "general",
+  });
+
+  expect(result.success).toBe(false);
+});
+
+test("accepts a program activity with an end date", () => {
+  const result = activitySchema.safeParse({
+    date: "2024-08-16",
+    endDate: "2024-09-23",
+    title: { ja: "短期留学", en: "Study abroad" },
+    type: "study-abroad",
+  });
+
+  expect(result.success).toBe(true);
+});
+
+test("rejects an activity that ends before it starts", () => {
+  const result = activitySchema.safeParse({
+    date: "2024-01-31",
+    endDate: "2023-11-01",
+    title: { ja: "プログラム", en: "Program" },
+    type: "program",
   });
 
   expect(result.success).toBe(false);

@@ -1,0 +1,39 @@
+---
+import type { Lang } from "@i18n/ui";
+import { useTranslations } from "@i18n/utils";
+import { getActivities } from "@data/activities";
+import Section from "./section.astro";
+import ActivityEntry from "./activity_entry.astro";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const activities = await getActivities();
+---
+
+<Section id="activities" title={t("section.activities")}>
+  {
+    activities.length > 0 ? (
+      <ul class="activity-list">
+        {activities.map((item) => (
+          <ActivityEntry item={item} lang={lang} />
+        ))}
+      </ul>
+    ) : (
+      <p class="empty">{t("activities.empty")}</p>
+    )
+  }
+</Section>
+
+<style>
+  .activity-list {
+    list-style: none;
+  }
+
+  .empty {
+    color: var(--color-text-secondary);
+  }
+</style>
