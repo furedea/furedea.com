@@ -22,12 +22,15 @@ test.describe("localized top pages", () => {
     await expect(
       page.getByText(`${profile.affiliation.ja}, ${profile.university.ja}`, { exact: true }),
     ).toBeVisible();
-    await expect(page.getByRole("link", { name: "GitHub" })).toHaveAttribute(
+    await expect(page.getByRole("link", { name: "GitHub", exact: true })).toHaveAttribute(
       "href",
       linkByLabel.GitHub,
     );
-    await expect(page.getByRole("link", { name: "X" })).toHaveAttribute("href", linkByLabel.X);
-    await expect(page.getByRole("link", { name: "Zenn" })).toHaveAttribute(
+    await expect(page.getByRole("link", { name: "X", exact: true })).toHaveAttribute(
+      "href",
+      linkByLabel.X,
+    );
+    await expect(page.getByRole("link", { name: "Zenn", exact: true })).toHaveAttribute(
       "href",
       linkByLabel.Zenn,
     );
