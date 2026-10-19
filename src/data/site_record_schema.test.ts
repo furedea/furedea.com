@@ -29,7 +29,7 @@ test("rejects activity dates outside the ISO date format", () => {
   expect(result.success).toBe(false);
 });
 
-test("accepts a program activity with an end date", () => {
+test("accepts a study-abroad activity with an end date", () => {
   const result = activitySchema.safeParse({
     date: "2024-08-16",
     endDate: "2024-09-23",
@@ -44,8 +44,8 @@ test("rejects an activity that ends before it starts", () => {
   const result = activitySchema.safeParse({
     date: "2024-01-31",
     endDate: "2023-11-01",
-    title: { ja: "プログラム", en: "Program" },
-    type: "program",
+    title: { ja: "採択", en: "Selection" },
+    type: "selection",
   });
 
   expect(result.success).toBe(false);
