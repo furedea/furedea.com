@@ -15,7 +15,7 @@ export const works: Work[] = [
       en: "Same choice, different luck: 100 versions of you live one job-hunting year. A browser game.",
     },
     url: "https://furedea.com/effort-or-luck/",
-    tags: ["Astro", "React", "TypeScript"],
+    tags: ["TypeScript", "React", "Astro"],
   },
   {
     title: { ja: "agent-harness", en: "agent-harness" },
@@ -24,7 +24,7 @@ export const works: Work[] = [
       en: "One Nix configuration for the hooks, skills, and permission rules of Claude Code, Codex, and other coding agents.",
     },
     url: "https://github.com/furedea/agent-harness",
-    tags: ["Rust", "Nix"],
+    tags: ["Rust", "Nix", "CLI"],
   },
   {
     title: { ja: "apple-mail-cli", en: "apple-mail-cli" },
@@ -42,7 +42,7 @@ export const works: Work[] = [
       en: "Tracks execution state for Pi coding agents, such as changes, checks, and blockers, outside the main LLM.",
     },
     url: "https://github.com/furedea/reflex-state",
-    tags: ["TypeScript"],
+    tags: ["TypeScript", "Pi"],
   },
   {
     title: { ja: "book-agent", en: "book-agent" },
@@ -51,7 +51,7 @@ export const works: Work[] = [
       en: "A Claude Code command that turns notes from technical books into sub-agent definitions.",
     },
     url: "https://github.com/furedea/book-agent",
-    tags: ["Claude Code"],
+    tags: ["Claude Code", "Obsidian"],
   },
   {
     title: { ja: "LLM-chatbot", en: "LLM-chatbot" },
@@ -60,6 +60,6 @@ export const works: Work[] = [
       en: "A LINE service that recommends smartphones through conversation and generates PDF catalogs. Built as a team in Fukuoka Mitou; I handled product data integration, search and recommendation text generation, the runtime environment, and about half of the presentation.",
     },
     url: "https://mitou-fukuoka.org/works/genius_catalog.html",
-    tags: ["Team", "Python", "LLM", "LINE"],
+    tags: ["Python", "LangChain", "LINE"],
   },
 ];
