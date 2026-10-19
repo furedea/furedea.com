@@ -5,6 +5,7 @@ import BaseLayout from "@layouts/base_layout.astro";
 import HeroSection from "@components/hero_section.astro";
 import AboutSection from "@components/about_section.astro";
 import ResearchSection from "@components/research_section.astro";
+import WorksSection from "@components/works_section.astro";
 import PublicationsSection from "@components/publications_section.astro";
 import NewsSection from "@components/news_section.astro";
 import BlogSection from "@components/blog_section.astro";
@@ -19,6 +20,7 @@ type SectionComponent = (typeof sectionComponents)[HomeSectionId];
 const sectionComponents = {
   about: AboutSection,
   research: ResearchSection,
+  works: WorksSection,
   publications: PublicationsSection,
   news: NewsSection,
   blog: BlogSection,

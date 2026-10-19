@@ -3,8 +3,15 @@ import { join } from "node:path";
 
 import { expect, test, type APIRequestContext, type Page } from "@playwright/test";
 
+import { works } from "../../src/data/works";
+
 const DIST_DIR = "dist";
 const SITE_ORIGIN = "https://furedea.com";
+// Works served under furedea.com by their own deployments, outside this site's build.
+const SEPARATELY_DEPLOYED_PATHS = works
+  .map((work) => new URL(work.url))
+  .filter((url) => url.origin === SITE_ORIGIN)
+  .map((url) => url.pathname);
 const REFERENCE_SELECTOR = [
   "a[href]",
   "area[href]",
@@ -119,6 +126,9 @@ async function collectRawTargets(page: Page): Promise<string[]> {
 function toInternalReference(sourcePath: string, rawTarget: string): InternalReference | undefined {
   const target = new URL(rawTarget, new URL(sourcePath, SITE_ORIGIN));
   if (target.origin !== SITE_ORIGIN) {
+    return undefined;
+  }
+  if (SEPARATELY_DEPLOYED_PATHS.some((path) => target.pathname.startsWith(path))) {
     return undefined;
   }
   return {
