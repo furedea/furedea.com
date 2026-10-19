@@ -16,8 +16,6 @@ export const newsSchema = z
   })
   .strict();
 
-const publicationNewsSchema = newsSchema.omit({ url: true }).strict();
-
 export const publicationSchema = z
   .object({
     title: localizedTextSchema,
@@ -31,7 +29,7 @@ export const publicationSchema = z
     pdfUrl: z.url().optional(),
     slidesUrl: z.url().optional(),
     bibtex: z.string().min(1).optional(),
-    news: publicationNewsSchema.optional(),
+    news: newsSchema.optional(),
   })
   .strict();
 
