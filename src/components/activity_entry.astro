@@ -17,14 +17,16 @@ const title = pickLocale(item.title, lang);
 <li class="activity-entry">
   <time datetime={item.date}>{formatActivityPeriod(item)}</time>
   <span class={`badge badge-${item.type}`}>{t(`activity.type.${item.type}`)}</span>
-  <OptionalLink href={item.url}>{title}</OptionalLink>
+  <span class="activity-title"><OptionalLink href={item.url}>{title}</OptionalLink></span>
 </li>
 
 <style>
   .activity-entry {
-    display: flex;
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
     align-items: baseline;
-    gap: 0.75rem;
+    row-gap: 0.25rem;
     padding: 0.5rem 0;
   }
 
@@ -43,6 +45,7 @@ const title = pickLocale(item.title, lang);
     padding: 0.0625rem 0.375rem;
     border-radius: 0.1875rem;
     white-space: nowrap;
+    text-align: center;
     color: var(--color-bg);
     background: var(--color-text-secondary);
   }
@@ -68,8 +71,8 @@ const title = pickLocale(item.title, lang);
   }
 
   @media (width < 640px) {
-    .activity-entry {
-      flex-wrap: wrap;
+    .activity-title {
+      grid-column: 1 / -1;
     }
   }
 </style>
