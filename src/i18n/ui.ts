@@ -44,7 +44,6 @@ export const ui = {
     "contact.email": "Email",
     "footer.copyright": "All rights reserved.",
     "publications.empty": "準備中",
-    "publications.nonPeerReviewed": "査読なし",
   },
   en: {
     "nav.home": "Home",
@@ -80,6 +79,5 @@ export const ui = {
     "contact.email": "Email",
     "footer.copyright": "All rights reserved.",
     "publications.empty": "Coming soon",
-    "publications.nonPeerReviewed": "Non-peer-reviewed",
   },
 } as const;
