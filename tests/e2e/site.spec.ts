@@ -150,10 +150,10 @@ test("renders activity collection records with localized type labels", async ({ 
   const entry = page.locator(".activity-entry").first();
   await expect(entry).toBeVisible();
   await expect(entry.locator("time").first()).toHaveAttribute("datetime", /^\d{4}-\d{2}-\d{2}$/);
-  await expect(entry.locator(".badge")).toHaveText(/^(論文|発表|受賞|プログラム|留学|お知らせ)$/);
+  await expect(entry.locator(".badge")).toHaveText(/^(論文|発表|受賞|採択|留学|お知らせ)$/);
 });
 
-test("shows dated programs with their periods and links", async ({ page }) => {
+test("shows dated activities with their periods, labels, and links", async ({ page }) => {
   await page.goto("/en/");
 
   const activities = page.locator('section[aria-labelledby="activities"]');
@@ -164,9 +164,10 @@ test("shows dated programs with their periods and links", async ({ page }) => {
     "href",
     "https://www.eng.kyushu-u.ac.jp/programs/program-q2pec/",
   );
-  const program = activities.locator(".activity-entry", { hasText: "Fukuoka Mitou" });
-  await expect(program).toContainText("2023.11–2024.01");
-  await expect(program.getByRole("link")).toHaveAttribute(
+  const selection = activities.locator(".activity-entry", { hasText: "Fukuoka Mitou" });
+  await expect(selection).toContainText("2023.11–2024.01");
+  await expect(selection.locator(".badge")).toHaveText("Selected");
+  await expect(selection.getByRole("link")).toHaveAttribute(
     "href",
     "https://note.com/mitou_fukuoka/n/n397fe44895c6",
   );

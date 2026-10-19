@@ -13,7 +13,7 @@ export const activitySchema = z
     endDate: z.iso.date().optional(),
     title: localizedTextSchema,
     url: z.url().optional(),
-    type: z.enum(["paper", "talk", "award", "program", "study-abroad", "general"]),
+    type: z.enum(["paper", "talk", "award", "selection", "study-abroad", "general"]),
   })
   .strict()
   .refine(({ date, endDate }) => endDate === undefined || date <= endDate, {
