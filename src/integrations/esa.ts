@@ -173,12 +173,20 @@ function isEsaPostSearchResult(value: unknown): value is EsaPostSearchResult {
 }
 
 function isEsaPostSummary(value: unknown): value is EsaPostSummary {
+  return isEsaPostResult(value) && hasEsaPostContent(value) && hasEsaPostMetadata(value);
+}
+
+function hasEsaPostContent(value: object): boolean {
   return (
-    isEsaPostResult(value) &&
     "name" in value &&
     typeof value.name === "string" &&
     "body_md" in value &&
-    typeof value.body_md === "string" &&
+    typeof value.body_md === "string"
+  );
+}
+
+function hasEsaPostMetadata(value: object): boolean {
+  return (
     "tags" in value &&
     Array.isArray(value.tags) &&
     value.tags.every((tag) => typeof tag === "string") &&

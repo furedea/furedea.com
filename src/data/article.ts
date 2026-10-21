@@ -137,33 +137,38 @@ function transformOutsideFences(markdown: string, transform: (prose: string) => 
   return restoreFencedBlocks(transform(protectedMarkdown), fencedBlocks);
 }
 
+type Fence = { character: string; length: number; lines: string[] };
+
 function protectFencedBlocks(markdown: string, fencedBlocks: string[]): string {
   const lines = markdown.split("\n");
   const protectedLines: string[] = [];
-  let fence: { character: string; length: number; lines: string[] } | undefined;
+  let fence: Fence | undefined;
 
   for (const line of lines) {
-    const marker = /^(?:\s*)(`{3,}|~{3,})/u.exec(line)?.[1];
-    if (fence === undefined && marker !== undefined) {
+    const marker = fence === undefined ? /^(?:\s*)(`{3,}|~{3,})/u.exec(line)?.[1] : undefined;
+    if (marker !== undefined) {
       fence = { character: marker[0], length: marker.length, lines: [line] };
       continue;
     }
-    if (fence !== undefined) {
-      fence.lines.push(line);
-      const closing = /^ {0,3}(`{3,}|~{3,})[ \t]*\r?$/u.exec(line)?.[1];
-      if (closing?.[0] === fence.character && closing.length >= fence.length) {
-        protectedLines.push(storeFencedBlock(fence.lines, fencedBlocks));
-        fence = undefined;
-      }
+    if (fence === undefined) {
+      protectedLines.push(line);
       continue;
     }
-    protectedLines.push(line);
+    fence.lines.push(line);
+    if (!closesFence(line, fence)) continue;
+    protectedLines.push(storeFencedBlock(fence.lines, fencedBlocks));
+    fence = undefined;
   }
 
   if (fence !== undefined) {
     protectedLines.push(storeFencedBlock(fence.lines, fencedBlocks));
   }
   return protectedLines.join("\n");
+}
+
+function closesFence(line: string, fence: Fence): boolean {
+  const closing = /^ {0,3}(`{3,}|~{3,})[ \t]*\r?$/u.exec(line)?.[1];
+  return closing?.[0] === fence.character && closing.length >= fence.length;
 }
 
 function storeFencedBlock(lines: string[], fencedBlocks: string[]): string {
@@ -180,7 +185,8 @@ function restoreFencedBlocks(markdown: string, fencedBlocks: string[]): string {
 function convertCaptions(markdown: string): string {
   return markdown.replace(
     /^!\[([^\]]*)\]\(([^)\s]+)\)\n([_*])(.+)\3$/gmu,
-    (_match, alt: string, url: string, _delimiter: string, caption: string) => {
+    (_match, ...captures: string[]) => {
+      const [alt, url, , caption] = captures;
       return [
         "<figure>",
         `<img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}">`,
