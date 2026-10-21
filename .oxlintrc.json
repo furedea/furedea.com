@@ -8,7 +8,11 @@
     }
   },
   "rules": {
+    "complexity": ["error", { "max": 10 }],
     "import/no-cycle": "error",
+    "max-depth": ["error", { "max": 2 }],
+    "max-lines": ["error", { "max": 500 }],
+    "max-params": ["error", { "max": 3 }],
     "typescript/await-thenable": "error",
     "typescript/no-floating-promises": "error",
     "typescript/no-misused-promises": "error"

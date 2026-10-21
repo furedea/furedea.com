@@ -68,8 +68,7 @@ function renderRow(entry: PerformanceReportEntry): string {
       (value) => value.toFixed(3),
     ),
     unitWithRange(
-      metrics.blockingTime,
-      samples.map(({ blockingTime }) => blockingTime),
+      { median: metrics.blockingTime, samples: samples.map(({ blockingTime }) => blockingTime) },
       "ms",
       Math.round,
     ),
@@ -89,12 +88,11 @@ function seconds(milliseconds: number): string {
 }
 
 function secondsWithRange(median: number, samples: number[]): string {
-  return unitWithRange(median, samples, "s", seconds);
+  return unitWithRange({ median, samples }, "s", seconds);
 }
 
 function unitWithRange(
-  median: number,
-  samples: number[],
+  { median, samples }: { median: number; samples: number[] },
   unit: string,
   format: (value: number) => string | number,
 ): string {
