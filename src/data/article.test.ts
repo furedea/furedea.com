@@ -156,6 +156,20 @@ _System overview._`;
 </figure>`);
 });
 
+test("converts asterisk-emphasized image captions to esa figures", () => {
+  const markdown = `![Flow](https://example.com/flow.png)
+*Request flow.*`;
+
+  expect(
+    toEsaMarkdown(markdown, {
+      canonicalUrl: "https://furedea.com/ja/blog/article-publishing/",
+    }),
+  ).toContain(`<figure>
+<img src="https://example.com/flow.png" alt="Flow">
+<figcaption style="text-align: center;"><em>Request flow.</em></figcaption>
+</figure>`);
+});
+
 test("preserves Zenn extension examples inside fenced code blocks", () => {
   const markdown = `\`\`\`markdown
 :::details Example
