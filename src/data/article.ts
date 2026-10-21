@@ -183,18 +183,25 @@ function restoreFencedBlocks(markdown: string, fencedBlocks: string[]): string {
 }
 
 function convertCaptions(markdown: string): string {
-  return markdown.replace(
-    /^!\[([^\]]*)\]\(([^)\s]+)\)\n([_*])(.+)\3$/gmu,
-    (_match, ...captures: string[]) => {
-      const [alt, url, , caption] = captures;
-      return [
-        "<figure>",
-        `<img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}">`,
-        `<figcaption style="text-align: center;"><em>${escapeHtml(caption)}</em></figcaption>`,
-        "</figure>",
-      ].join("\n");
-    },
-  );
+  const captionedImages =
+    /^!\[(?<alt>[^\]]*)\]\((?<url>[^)\s]+)\)\n(?<marker>[_*])(?<caption>.+)\k<marker>$/gmu;
+  let converted = "";
+  let copiedUntil = 0;
+  for (const match of markdown.matchAll(captionedImages)) {
+    const { alt = "", url = "", caption = "" } = match.groups ?? {};
+    converted += markdown.slice(copiedUntil, match.index) + captionFigure(alt, url, caption);
+    copiedUntil = match.index + match[0].length;
+  }
+  return converted + markdown.slice(copiedUntil);
+}
+
+function captionFigure(alt: string, url: string, caption: string): string {
+  return [
+    "<figure>",
+    `<img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}">`,
+    `<figcaption style="text-align: center;"><em>${escapeHtml(caption)}</em></figcaption>`,
+    "</figure>",
+  ].join("\n");
 }
 
 function replaceImageUrls(markdown: string, origin: string): string {

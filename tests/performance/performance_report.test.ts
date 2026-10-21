@@ -79,6 +79,17 @@ describe("performance report", () => {
     expect(summary).toContain("1.23 s (1.00–1.50)");
     expect(summary).toContain("| 3 |");
   });
+
+  test("shows the blocking time range in rounded milliseconds", () => {
+    const entry = reportEntry();
+    entry.samples = [
+      { ...entry.metrics, blockingTime: 50.4 },
+      entry.metrics,
+      { ...entry.metrics, blockingTime: 120.6 },
+    ];
+
+    expect(renderPerformanceSummary([entry])).toContain("88 ms (50–121)");
+  });
 });
 
 function reportEntry(): PerformanceReportEntry {
