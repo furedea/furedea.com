@@ -215,6 +215,40 @@ test.each([0, -1, 1, 1.5, "2"])(
   },
 );
 
+test.each([
+  ["name", 1],
+  ["body_md", null],
+  ["tags", [1]],
+  ["category", 1],
+  ["wip", "false"],
+])("refuses to publish when a searched post has an invalid %s", async (field, value) => {
+  const methods: string[] = [];
+  const fetcher: typeof fetch = async (input, options) => {
+    methods.push(new Request(input, options).method);
+    return Response.json({
+      posts: [
+        {
+          number: 42,
+          url: "https://example-team.esa.io/posts/42",
+          ...PAYLOAD.post,
+          [field]: value,
+        },
+      ],
+    });
+  };
+
+  await expect(
+    upsertEsaPost({
+      team: "example-team",
+      accessToken: ACCESS_TOKEN,
+      canonicalUrl: "https://furedea.com/ja/blog/article-publishing/",
+      payload: PAYLOAD,
+      fetcher,
+    }),
+  ).rejects.toThrow("esa API returned an invalid post search response.");
+  expect(methods.filter((method) => method !== "GET")).toEqual([]);
+});
+
 test("does not publish when a later search page fails", async () => {
   const methods: string[] = [];
   const fetcher: typeof fetch = async (input, options) => {
