@@ -17,7 +17,7 @@ overrides:
   source-map-js: "1.2.2"
   svgo: "4.1.0"
   tinypool: "2.1.2"
-  vite: "8.2.2"
+  vite: "8.2.4"
   yaml: "2.8.3"
 
 allowBuilds:
@@ -49,3 +49,5 @@ minimumReleaseAgeExclude:
   - svgo@4.1.0
   # Renovate security update: vitest@4.1.11
   - vitest@4.1.11
+  # Renovate security update: vite@8.2.4
+  - vite@8.2.4
