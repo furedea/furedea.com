@@ -176,7 +176,8 @@ jobs:
         run: pnpm run verify:build
 
   e2e:
-    runs-on: ubuntu-latest
+    # Playwright does not yet ship chromium-headless-shell for Ubuntu 26.04.
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
       contents: read
