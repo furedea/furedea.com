@@ -5,7 +5,7 @@ catalogs: {}
 
 overrides:
   devalue: "5.9.4"
-  dompurify: "3.4.16"
+  dompurify: "3.4.17"
   esbuild: "0.28.2"
   fast-uri: "3.1.8"
   js-yaml: "4.3.2"
@@ -32,7 +32,8 @@ auditConfig:
 minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
   # Security remediation: DOMPurify detached subtree XSS.
-  - dompurify@3.4.13
+  # Renovate security update: dompurify@3.4.17
+  - dompurify@3.4.13 || 3.4.17
   # Renovate security update: mermaid@11.16.1
   - mermaid@11.16.1
   # Security remediation: nanoid zero-size infinite loop. || 3.3.18
