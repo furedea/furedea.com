@@ -7,7 +7,7 @@ overrides:
   devalue: "5.9.4"
   dompurify: "3.4.16"
   esbuild: "0.28.2"
-  fast-uri: "3.1.8"
+  fast-uri: "3.1.9"
   js-yaml: "4.3.2"
   katex: "0.18.2"
   nanoid: "3.3.20"
@@ -37,8 +37,8 @@ minimumReleaseAgeExclude:
   - mermaid@11.16.1
   # Security remediation: nanoid zero-size infinite loop. || 3.3.18
   - nanoid@3.3.17 || 3.3.18
-  # Renovate security update: fast-uri@3.1.5 || 3.1.6
-  - fast-uri@3.1.5 || 3.1.6
+  # Renovate security update: fast-uri@3.1.5 || 3.1.6 || 3.1.9
+  - fast-uri@3.1.5 || 3.1.6 || 3.1.9
   # Renovate security update: js-yaml@4.3.1
   - js-yaml@4.3.1
   # Renovate security update: astro@7.1.0 || 7.2.8
