@@ -19,7 +19,9 @@ const PAGE_BUDGET: AssetBudget = {
   total: { size: 850_000, count: 40 },
   script: { size: 0, count: 0 },
   image: { size: 40_000, count: 2 },
-  font: { size: 700_000, count: 35 },
+  // wrangler dev sends the _headers security headers with every response, as production does, and
+  // encoded size counts them: about 0.9 kB on each of ~30 font files.
+  font: { size: 730_000, count: 35 },
 };
 
 const ARTICLE_BUDGET: AssetBudget = {
