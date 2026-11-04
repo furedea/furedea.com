@@ -68,7 +68,9 @@ test("lists works under their own nav item, each card linking to the work", asyn
 
     await expect(page.locator('.site-nav a[href$="#works"]')).toHaveCount(1);
     for (const work of works) {
-      const card = page.locator(".work-card", { hasText: work.title[lang] });
+      const card = page.locator(".work-card").filter({
+        has: page.getByRole("heading", { name: work.title[lang], exact: true }),
+      });
       await expect(card).toHaveAttribute("href", work.url);
       await expect(card).toContainText(work.description[lang]);
     }
