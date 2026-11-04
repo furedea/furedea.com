@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { expect, test, type Browser, type CDPSession } from "@playwright/test";
 
 import { discoverLocalizedRoutes } from "../site_routes";
+import { blockWebAnalytics } from "../web_analytics";
 import {
   findAssetBudgetViolations,
   summarizeAssets,
@@ -40,6 +41,7 @@ for (const route of discoverLocalizedRoutes(DIST_DIRECTORY)) {
 
 async function measureAssets(browser: Browser, route: string): Promise<AssetUsage> {
   const context = await browser.newContext({ serviceWorkers: "block" });
+  await blockWebAnalytics(context);
   try {
     const page = await context.newPage();
     const session = await context.newCDPSession(page);

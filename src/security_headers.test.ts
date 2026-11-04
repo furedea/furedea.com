@@ -13,13 +13,13 @@ test("applies the recommended security headers to every static response", async 
   expect(headers).toContain("Content-Security-Policy:");
 });
 
-test("allows the automatically injected Cloudflare Web Analytics beacon", async () => {
+test("allows the Cloudflare Web Analytics beacon to load and report", async () => {
   const headers = await readFile(new URL("../public/_headers", import.meta.url), "utf8");
 
   expect(headers).toContain(
     "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com",
   );
-  expect(headers).toContain("connect-src 'self'");
+  expect(headers).toContain("connect-src 'self' https://cloudflareinsights.com;");
 });
 
 test("marks Workers preview hosts noindex and never the production host", async () => {

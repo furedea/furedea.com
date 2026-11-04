@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 import { profile } from "../../src/data/profile";
 import { site } from "../../src/data/site";
 import { works } from "../../src/data/works";
+import { BEACON_ORIGIN } from "../web_analytics";
 
 const linkByLabel = Object.fromEntries(
   profile.socialLinks.map((link) => [link.platform, link.url]),
@@ -276,7 +277,8 @@ test("loads critical article resources only from the site origin", async ({ page
     if (
       isCriticalResource &&
       url.protocol.startsWith("http") &&
-      url.origin !== "http://127.0.0.1:4321"
+      url.origin !== "http://127.0.0.1:4321" &&
+      url.origin !== BEACON_ORIGIN
     ) {
       externalOrigins.add(url.origin);
     }

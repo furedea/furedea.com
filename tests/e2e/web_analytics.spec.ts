@@ -1,8 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { WEB_ANALYTICS_TOKEN } from "../../src/data/site";
-
-const BEACON_URL = "https://static.cloudflareinsights.com/beacon.min.js";
+import { BEACON_ATTRIBUTE, BEACON_URL } from "../web_analytics";
 
 test("loads the single Web Analytics beacon without CSP violations", async ({ page }) => {
   const violations: string[] = [];
@@ -22,10 +20,7 @@ test("loads the single Web Analytics beacon without CSP violations", async ({ pa
 
   const beacons = page.locator(`script[src="${BEACON_URL}"]`);
   await expect(beacons).toHaveCount(1);
-  await expect(beacons).toHaveAttribute(
-    "data-cf-beacon",
-    JSON.stringify({ token: WEB_ANALYTICS_TOKEN }),
-  );
+  await expect(beacons).toHaveAttribute("data-cf-beacon", BEACON_ATTRIBUTE);
   await expect.poll(() => page.evaluate(() => "__beaconLoaded" in window)).toBe(true);
   expect(violations).toEqual([]);
 });
