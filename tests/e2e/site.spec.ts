@@ -118,11 +118,11 @@ test("lists personal and team works in the agreed order", async ({ page }) => {
   await page.goto("/en/");
 
   await expect(page.locator(".work-card h3")).toHaveText([
-    "Effort or Luck",
     "agent-harness",
-    "apple-mail-cli",
-    "reflex-state",
-    "book-agent",
+    "agent-config",
+    "dotfiles",
+    "Effort or Luck",
+    "rater",
     "LLM-chatbot",
   ]);
   const teamWork = page.locator(".work-card", { hasText: "LLM-chatbot" });
