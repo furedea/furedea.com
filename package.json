@@ -48,7 +48,8 @@
     "knip": "6.4.1",
     "oxfmt": "0.44.0",
     "oxlint": "1.59.0",
-    "vitest": "4.1.12"
+    "vitest": "4.1.12",
+    "wrangler": "4.154.0"
   },
   "packageManager": "pnpm@11.27.0"
 }

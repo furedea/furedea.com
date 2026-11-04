@@ -22,6 +22,9 @@ interface NotFoundText {
   homeLabel: string;
 }
 
+// Public by design: the Web Analytics token is shipped in every page's HTML.
+export const WEB_ANALYTICS_TOKEN = "b6a0324cf45a4369bb535c1a39643c06";
+
 export const site: SiteMeta = {
   labName: {
     ja: "POSL研究室",

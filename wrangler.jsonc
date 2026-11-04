@@ -1,0 +1,17 @@
+// A Worker of static assets only, routed to furedea.com/*. The pages build into dist/, so asset
+// paths match the URL paths, and dist/_headers applies to them. An unknown path gets the nearest
+// 404.html up its directory tree. This is a route, not a custom domain: a custom domain would take
+// precedence over effort-or-luck's more specific furedea.com/effort-or-luck* route and shadow it.
+// preview_urls keeps per-branch Workers Builds previews, which are served from workers.dev.
+{
+  "name": "furedea-com",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+  },
+  "routes": [{ "pattern": "furedea.com/*", "zone_name": "furedea.com" }],
+  "workers_dev": false,
+  "preview_urls": true,
+}

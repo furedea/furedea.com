@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { expect, test, type Browser, type Page } from "@playwright/test";
 
 import { discoverLocalizedRoutes } from "../site_routes";
+import { blockWebAnalytics } from "../web_analytics";
 import {
   type PerformanceBudget as Budget,
   type PerformanceMeasurement,
@@ -69,6 +70,7 @@ async function measurePage(browser: Browser, route: string): Promise<Metrics> {
     serviceWorkers: "block",
     viewport: { width: 1_280, height: 720 },
   });
+  await blockWebAnalytics(context);
   try {
     const page = await context.newPage();
     const session = await context.newCDPSession(page);

@@ -14,6 +14,7 @@ logs/
 node_modules/
 .pnpm-store/
 .astro/
+.wrangler/
 coverage/
 dist/
 playwright-report/

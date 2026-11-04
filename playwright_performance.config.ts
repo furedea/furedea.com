@@ -10,7 +10,9 @@ export default defineConfig({
   outputDir: "test-results/performance",
   reporter: [["list"], ["./tests/performance/performance_reporter.ts"]],
   webServer: {
-    command: "pnpm preview --host 127.0.0.1",
+    // Serves dist/ with the production runtime and wrangler.jsonc; astro preview applies neither.
+    command: "pnpm exec wrangler dev --ip 127.0.0.1 --port 4321",
+    env: { WRANGLER_SEND_METRICS: "false" },
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
     url: "http://127.0.0.1:4321/ja/",
