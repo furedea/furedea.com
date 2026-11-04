@@ -21,3 +21,13 @@ test("allows the automatically injected Cloudflare Web Analytics beacon", async 
   );
   expect(headers).toContain("connect-src 'self'");
 });
+
+test("marks Workers preview hosts noindex and never the production host", async () => {
+  const headers = await readFile(new URL("../public/_headers", import.meta.url), "utf8");
+  const noindexRules = headers
+    .split(/\n(?=\S)/)
+    .filter((rule) => rule.includes("X-Robots-Tag: noindex"))
+    .map((rule) => rule.split("\n")[0]);
+
+  expect(noindexRules).toEqual(["https://*.workers.dev/*"]);
+});

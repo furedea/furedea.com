@@ -1,6 +1,6 @@
 # furedea.com
 
-Source for [furedea.com](https://furedea.com), Kaito Shigyo's personal website and blog. The static bilingual site is built with Astro and deployed through Cloudflare Pages.
+Source for [furedea.com](https://furedea.com), Kaito Shigyo's personal website and blog. The static bilingual site is built with Astro and deployed as a Cloudflare Worker of static assets.
 
 ## Development
 
@@ -61,8 +61,19 @@ creates a missing post, updates a different post, and leaves an identical post u
 
 ## Deployment
 
-Cloudflare Pages builds the `main` branch with `pnpm build` and serves `dist/` at `furedea.com`.
+Workers Builds runs `pnpm build` and `pnpm exec wrangler deploy` for `main`. `wrangler.jsonc`
+serves `dist/` on the route `furedea.com/*` (a route, not a custom domain, so the
+`furedea.com/effort-or-luck*` Worker keeps winning). The Playwright suites run against
+`wrangler dev`, which applies `_headers`, `html_handling`, and the 404 rules as production does.
 Pull requests are validated by GitHub Actions before merging.
+
+Cut-over from Pages, in the Cloudflare dashboard:
+
+1. Connect this repository in Workers & Pages (build: `pnpm build`, deploy: `pnpm exec wrangler deploy`).
+2. After the first deploy, check every page, the 404, and `/effort-or-luck/`.
+3. Remove the Pages custom domain. If the apex DNS record disappears, add a proxied `AAAA furedea.com 100::`.
+4. Disable automatic Web Analytics injection in the site settings; the layout carries the beacon.
+5. Delete the Pages project.
 
 Automatic esa publishing requires a GitHub environment named `production`, restricted to the
 `main` branch, with an environment secret named `ESA_ACCESS_TOKEN`. Use a dedicated esa PAT v2

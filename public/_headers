@@ -6,8 +6,6 @@
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
 
-https://furedea-com.pages.dev/*
-  X-Robots-Tag: noindex
-
-https://:version.furedea-com.pages.dev/*
+# Workers Builds branch previews and workers.dev; production is served from furedea.com.
+https://*.workers.dev/*
   X-Robots-Tag: noindex

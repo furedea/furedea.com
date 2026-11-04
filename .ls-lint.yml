@@ -18,6 +18,6 @@ ignore:
 
   - "{.pnpm-store,.astro,.turbo,.vite}"
   - "**/{.pnpm-store,.astro,.turbo,.vite}"
-  - "{dist,build,coverage,playwright-report,test-results,.next,out,.nuxt,.output,.svelte-kit}"
-  - "**/{dist,build,coverage,playwright-report,test-results,.next,out,.nuxt,.output,.svelte-kit}"
+  - "{dist,build,coverage,playwright-report,test-results,.wrangler,.next,out,.nuxt,.output,.svelte-kit}"
+  - "**/{dist,build,coverage,playwright-report,test-results,.wrangler,.next,out,.nuxt,.output,.svelte-kit}"
   - src/pages

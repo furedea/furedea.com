@@ -1,0 +1,4 @@
+{
+  // wrangler runs from the Playwright webServer command strings, which knip does not parse.
+  "ignoreDependencies": ["wrangler"],
+}
