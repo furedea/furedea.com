@@ -2,6 +2,7 @@ ls:
   .dir: regex:\.?[a-z0-9]+(-[a-z0-9]+)*
   .md: regex:[a-z0-9]*([._][a-z0-9]+)* | regex:(README|CONTRIBUTING|CHANGELOG|AGENTS|CLAUDE|SKILL|CONTENT_LICENSE)
   .yaml: regex:[a-z0-9]*([._][a-z0-9]+)* | regex:pnpm-(lock|workspace)
+  .yml: regex:[a-z0-9]+(-[a-z0-9]+)*
   .*: regex:[a-z0-9]*([._][a-z0-9]+)*
 
 ignore:
