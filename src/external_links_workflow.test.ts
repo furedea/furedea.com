@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { expect, test } from "vitest";
 
 const workflow = readFileSync(
-  new URL("../.github/workflows/external_links.yml", import.meta.url),
+  new URL("../.github/workflows/external-links.yml", import.meta.url),
   "utf8",
 );
 
