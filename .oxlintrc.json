@@ -14,6 +14,7 @@
     "max-depth": ["error", { "max": 2 }],
     "max-lines": ["error", { "max": 500 }],
     "max-params": ["error", { "max": 3 }],
+    "no-unused-vars": ["warn", { "ignoreRestSiblings": true }],
     "typescript/await-thenable": "error",
     "typescript/consistent-type-imports": "error",
     "typescript/no-explicit-any": "error",
