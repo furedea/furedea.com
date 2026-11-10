@@ -1,7 +1,8 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["typescript", "import", "promise", "node", "vitest"],
-  "ignorePatterns": ["coverage/**", "dist/**", "node_modules/**"],
+  // `.astro/**` is Astro's generated type output, which this Astro site produces.
+  "ignorePatterns": ["coverage/**", "dist/**", "node_modules/**", ".astro/**"],
   "settings": {
     "vitest": {
       "typecheck": true
@@ -14,6 +15,8 @@
     "max-lines": ["error", { "max": 500 }],
     "max-params": ["error", { "max": 3 }],
     "typescript/await-thenable": "error",
+    "typescript/consistent-type-imports": "error",
+    "typescript/no-explicit-any": "error",
     "typescript/no-floating-promises": "error",
     "typescript/no-misused-promises": "error"
   },
