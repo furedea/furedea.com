@@ -1,8 +1,10 @@
-# ADR-0008: Generate only article social previews
+---
+status: accepted
+date: 2026-08-10
+supersedes: [ADR-0007]
+---
 
-- Status: Accepted
-- Date: 2026-08-10
-- Supersedes: ADR-0007
+# ADR-0008: Generate only article social previews
 
 In the context of adding distinctive article previews without changing the visible website,
 facing the need to preserve the established profile and blog card presentation, we decided for

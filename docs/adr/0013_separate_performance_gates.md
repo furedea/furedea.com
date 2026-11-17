@@ -1,8 +1,10 @@
-# ADR-0013: Separate performance gates
+---
+status: accepted
+date: 2026-08-15
+supersedes: [ADR-0012]
+---
 
-- Status: Accepted
-- Date: 2026-08-15
-- Supersedes: ADR-0012
+# ADR-0013: Separate performance gates
 
 In the context of protecting site performance without delaying every merge, facing deterministic
 resource limits and variable rendering timings combined in one long required check, we decided to

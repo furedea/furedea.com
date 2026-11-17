@@ -1,8 +1,11 @@
-# ADR-0012: Stabilize performance measurements
+---
+status: superseded
+date: 2026-08-15
+supersedes: [ADR-0011]
+superseded-by: [ADR-0013]
+---
 
-- Status: Superseded by ADR-0013
-- Date: 2026-08-15
-- Supersedes: ADR-0011
+# ADR-0012: Stabilize performance measurements
 
 In the context of enforcing browser performance budgets on variable GitHub-hosted runners,
 facing a paint-time outlier consistent with runtime network variability while resource and

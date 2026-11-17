@@ -1,7 +1,10 @@
-# ADR-0011: Enforce performance budgets with Playwright
+---
+status: superseded
+date: 2026-08-14
+superseded-by: [ADR-0012]
+---
 
-- Status: Superseded by ADR-0012
-- Date: 2026-08-14
+# ADR-0011: Enforce performance budgets with Playwright
 
 In the context of guarding the static Astro site's performance as published pages increase,
 facing the need for repeatable pre-deployment measurements without adding a dependency affected

@@ -1,7 +1,10 @@
-# ADR-0007: Generate article social covers
+---
+status: superseded
+date: 2026-08-10
+superseded-by: [ADR-0008]
+---
 
-- Status: Superseded
-- Date: 2026-08-10
+# ADR-0007: Generate article social covers
 
 In the context of presenting repository-authored articles consistently on the website and in
 social previews, facing the maintenance cost and visual drift of manually authored cover images,

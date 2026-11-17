@@ -1,8 +1,10 @@
-# ADR-0006: Publish articles from CI
+---
+status: superseded
+date: 2026-08-06
+superseded-by: [ADR-0014]
+---
 
-- Status: Superseded
-- Date: 2026-08-06
-- Superseded by: [ADR-0014](0014-complete-esa-discovery-before-publishing.md)
+# ADR-0006: Publish articles from CI
 
 In the context of publishing repository-authored articles to esa after merging into `main`,
 facing the need for unattended, repeatable updates without committing remote post identifiers
