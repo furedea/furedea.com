@@ -1,7 +1,9 @@
-# ADR-0005: Author articles as Zenn-compatible Markdown
+---
+status: accepted
+date: 2026-08-04
+---
 
-- Status: Accepted
-- Date: 2026-08-04
+# ADR-0005: Author articles as Zenn-compatible Markdown
 
 In the context of publishing the same Japanese article on furedea.com, Zenn, and esa,
 facing incompatible previews, metadata, and image locations across those platforms, we

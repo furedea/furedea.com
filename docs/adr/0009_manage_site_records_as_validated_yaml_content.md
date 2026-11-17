@@ -1,7 +1,9 @@
-# ADR-0009: Manage site records as validated YAML content
+---
+status: accepted
+date: 2026-08-12
+---
 
-- Status: Accepted
-- Date: 2026-08-12
+# ADR-0009: Manage site records as validated YAML content
 
 In the context of maintaining publications and homepage news, facing duplicated facts and code or
 test edits for each editorial update, we decided for one schema-validated YAML file per record with

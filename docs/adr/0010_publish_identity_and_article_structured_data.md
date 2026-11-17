@@ -1,7 +1,9 @@
-# ADR-0010: Publish identity and article structured data
+---
+status: accepted
+date: 2026-08-14
+---
 
-- Status: Accepted
-- Date: 2026-08-14
+# ADR-0010: Publish identity and article structured data
 
 In the context of a personal academic website with articles and publicly displayed social links,
 facing the need for search engines to associate the author, affiliation, articles, and external

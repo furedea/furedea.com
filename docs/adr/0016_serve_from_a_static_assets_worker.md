@@ -1,8 +1,10 @@
-# ADR-0016: Serve from a static-assets Worker
+---
+status: accepted
+date: 2026-11-04
+supersedes: [ADR-0002]
+---
 
-- Status: Accepted
-- Date: 2026-11-04
-- Supersedes: [ADR-0002](0002-deploy-with-cloudflare-pages.md)
+# ADR-0016: Serve from a static-assets Worker
 
 In the context of hosting `furedea.com` next to `furedea.com/effort-or-luck/`, which is already a
 Worker of static assets, facing a Pages project whose settings live only in the dashboard and a

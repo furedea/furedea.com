@@ -1,7 +1,9 @@
-# ADR-0015: List separately deployed works under furedea.com paths
+---
+status: accepted
+date: 2026-10-19
+---
 
-- Status: Accepted
-- Date: 2026-10-19
+# ADR-0015: List separately deployed works under furedea.com paths
 
 In the context of a works section that links to projects served under this domain, such as
 `/effort-or-luck/`, by their own deployments rather than by this site's build, facing an
